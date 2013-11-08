@@ -18,7 +18,7 @@ namespace FapChat.Core.Snapchat
         /// </summary>
         /// <param name="username"></param>
         /// <param name="password"></param>
-        public static async Task<TempEnumHolder.LoginStatus> Login(string username, string password)
+        public static async Task<Tuple<TempEnumHolder.LoginStatus, Account>> Login(string username, string password)
         {
             var timestamp = Timestamps.GenerateRetardedTimestamp();
             var postData = new Dictionary<string, string>
@@ -37,15 +37,21 @@ namespace FapChat.Core.Snapchat
                     var parsedData = await JsonConvert.DeserializeObjectAsync<Account>(data);
 
                     // Check if we were logged in
-                    if (!parsedData.Logged) return TempEnumHolder.LoginStatus.InvalidCredentials;
+                    if (!parsedData.Logged)
+                        return
+                            new Tuple<TempEnumHolder.LoginStatus, Account>(
+                                TempEnumHolder.LoginStatus.InvalidCredentials, parsedData);
 
                     // Yup, save the data and return true
-                    Storage.UserAccount = parsedData;
-                    return TempEnumHolder.LoginStatus.Success;
+                    return 
+                        new Tuple<TempEnumHolder.LoginStatus, Account>(
+                            TempEnumHolder.LoginStatus.Success, parsedData);
                 }
                 default:
                     // Well, fuck
-                    return TempEnumHolder.LoginStatus.ServerError;
+                    return 
+                        new Tuple<TempEnumHolder.LoginStatus, Account>(
+                            TempEnumHolder.LoginStatus.ServerError, null);
             }
         }
     }
