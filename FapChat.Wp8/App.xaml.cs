@@ -4,6 +4,7 @@ using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using FapChat.Wp8.Helpers;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using FapChat.Wp8.Resources;
@@ -39,7 +40,7 @@ namespace FapChat.Wp8
             if (Debugger.IsAttached)
             {
                 // Display the current frame rate counters.
-                Application.Current.Host.Settings.EnableFrameRateCounter = true;
+                Current.Host.Settings.EnableFrameRateCounter = true;
 
                 // Show the areas of the app that are being redrawn in each frame.
                 //Application.Current.Host.Settings.EnableRedrawRegions = true;
@@ -55,6 +56,8 @@ namespace FapChat.Wp8
                 PhoneApplicationService.Current.UserIdleDetectionMode = IdleDetectionMode.Disabled;
             }
 
+            // Global handler for page navigation
+            RootFrame.Navigating += RootFrame_Navigating;
         }
 
         // Code to execute when the application is launching (eg, from Start)
@@ -89,6 +92,18 @@ namespace FapChat.Wp8
                 // A navigation has failed; break into the debugger
                 Debugger.Break();
             }
+        }
+
+        // Code to execute during a navigation
+        void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
+        {
+            // check if we need to be authed
+            if (e.Uri.OriginalString.StartsWith("/Pages/Authed/")) return; // reversed logic test for debug
+
+            // yup
+            if (Core.Snapchat.Storage.UserAccount != null) return;
+            e.Cancel = true;
+            RootFrame.Dispatcher.BeginInvoke(() => RootFrame.Navigate(Navigation.GenerateNavigateUri(Navigation.NavigationTarget.Login)));
         }
 
         // Code to execute on Unhandled Exceptions
