@@ -95,6 +95,7 @@
     <Compile Include="Snapchat\Models\Account.cs" />
     <Compile Include="Snapchat\Models\AddedFriend.cs" />
     <Compile Include="Snapchat\Models\Friend.cs" />
+    <Compile Include="Snapchat\Storage.cs" />
     <Compile Include="Snapchat\TempEnumHolder.cs" />
   </ItemGroup>
   <ItemGroup>
