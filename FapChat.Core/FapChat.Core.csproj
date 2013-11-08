@@ -93,6 +93,8 @@
     <Compile Include="Snapchat\Helpers\WebRequests.cs" />
     <Compile Include="Snapchat\KeyVault.cs" />
     <Compile Include="Snapchat\Models\Account.cs" />
+    <Compile Include="Snapchat\Models\AddedFriend.cs" />
+    <Compile Include="Snapchat\Models\Friend.cs" />
     <Compile Include="Snapchat\TempEnumHolder.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -112,7 +114,9 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Compile Include="Snapchat\Models\Snap.cs" />
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />
   <ProjectExtensions />

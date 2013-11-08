@@ -151,7 +151,7 @@
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FuckChat.Core\FapChat.Core.csproj">
+    <ProjectReference Include="..\FapChat.Core\FapChat.Core.csproj">
       <Project>{29D4E478-24EA-49A2-9B34-4E15241D608D}</Project>
       <Name>FapChat.Core</Name>
     </ProjectReference>

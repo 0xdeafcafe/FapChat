@@ -63,7 +63,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\FuckChat.Core\FapChat.Core.csproj">
+    <ProjectReference Include="..\FapChat.Core\FapChat.Core.csproj">
       <Project>{29d4e478-24ea-49a2-9b34-4e15241d608d}</Project>
       <Name>FapChat.Core</Name>
     </ProjectReference>
