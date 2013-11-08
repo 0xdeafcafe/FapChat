@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Windows;
-using System.Windows.Navigation;
 
 namespace FapChat.Wp8.Helpers
 {
@@ -68,7 +66,7 @@ namespace FapChat.Wp8.Helpers
         /// <summary>
         /// Navigates to the specified path
         /// </summary>
-        /// <param name="target">The target to navigate to.</param>
+        /// <param name="target">The target to navigate to. </param>
         public static void NavigateTo(NavigationTarget target)
         {
             NavigateTo(GenerateNavigateUrl(target));
