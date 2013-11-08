@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
 using FapChat.Core.Snapchat.Helpers;
+using FapChat.Core.Snapchat.Models;
+using Newtonsoft.Json;
 
 namespace FapChat.Core.Snapchat
 {
@@ -32,6 +34,7 @@ namespace FapChat.Core.Snapchat
                 {
                     // Shit worked
                     var data = await response.Content.ReadAsStringAsync();
+                    var parsedData = await JsonConvert.DeserializeObjectAsync<Account>(data);
                     return TempEnumHolder.LoginStatus.Success;
                 }
                 case HttpStatusCode.Forbidden:
