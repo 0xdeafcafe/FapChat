@@ -24,6 +24,9 @@ namespace FapChat.Core.Snapchat.Models
         // public String[] Requests { get; set; }
 
 
+        public Int32 Sent { get; set; }
+
+
 
         public class AddedFriend
         {

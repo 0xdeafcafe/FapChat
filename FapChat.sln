@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
 VisualStudioVersion = 12.0.20827.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FapChat.Core.Tests", "FuckChat.Core.Tests\FapChat.Core.Tests.csproj", "{9A5714C4-60C3-44A8-910D-74572888438A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FapChat.Core.Tests", "FapChat.Core.Tests\FapChat.Core.Tests.csproj", "{9A5714C4-60C3-44A8-910D-74572888438A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FapChat.Core", "FuckChat.Core\FapChat.Core.csproj", "{29D4E478-24EA-49A2-9B34-4E15241D608D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FapChat.Core", "FapChat.Core\FapChat.Core.csproj", "{29D4E478-24EA-49A2-9B34-4E15241D608D}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{D2A3420C-4220-43BE-9C81-6C1C63C19034}"
 	ProjectSection(SolutionItems) = preProject
