@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Resources;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
+using FapChat.Core.Snapchat;
 using FapChat.Wp8.Helpers;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
@@ -11,13 +11,18 @@ using FapChat.Wp8.Resources;
 
 namespace FapChat.Wp8
 {
-    public partial class App : Application
+    public partial class App
     {
         /// <summary>
         /// Provides easy access to the root frame of the Phone Application.
         /// </summary>
         /// <returns>The root frame of the Phone Application.</returns>
         public static PhoneApplicationFrame RootFrame { get; private set; }
+
+        /// <summary>
+        /// Provices easy access to the Isolated Storage Section of the Phone
+        /// </summary>
+        public static Storage IsolatedStorage = new Storage();
 
         /// <summary>
         /// Constructor for the Application object.
@@ -98,10 +103,10 @@ namespace FapChat.Wp8
         void RootFrame_Navigating(object sender, NavigatingCancelEventArgs e)
         {
             // check if we need to be authed
-            if (e.Uri.OriginalString.StartsWith("/Pages/Authed/")) return; // reversed logic test for debug
+            if (!e.Uri.OriginalString.StartsWith("/Pages/Authed/")) return;
 
             // yup
-            if (Core.Snapchat.Storage.UserAccount != null) return;
+            if (IsolatedStorage.UserAccount != null) return;
             e.Cancel = true;
             RootFrame.Dispatcher.BeginInvoke(() => RootFrame.Navigate(Navigation.GenerateNavigateUri(Navigation.NavigationTarget.Login)));
         }
