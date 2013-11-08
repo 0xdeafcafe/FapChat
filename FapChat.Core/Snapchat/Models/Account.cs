@@ -14,6 +14,11 @@ namespace FapChat.Core.Snapchat.Models
         // public String[] Bests { get; set; }
 
         /// <summary>
+        /// The message explaining the error, if there was one
+        /// </summary>
+        public String Message { get; set; }
+
+        /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("is_vip")]
