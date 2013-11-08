@@ -6,11 +6,11 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("FuckChat.Core")]
+[assembly: AssemblyTitle("FapChat.Wp8")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("FuckChat.Core")]
+[assembly: AssemblyProduct("FapChat.Wp8")]
 [assembly: AssemblyCopyright("Copyright ©  2013")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,7 +21,7 @@ using System.Resources;
 [assembly: ComVisible(false)]
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
-[assembly: Guid("29d4e478-24ea-49a2-9b34-4e15241d608d")]
+[assembly: Guid("b0fa3e66-0cf3-4e85-85ed-388defecd4d2")]
 
 // Version information for an assembly consists of the following four values:
 //
