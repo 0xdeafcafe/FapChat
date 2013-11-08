@@ -46,5 +46,32 @@ namespace FapChat.Wp8.Helpers
         {
             return new Uri(GenerateNavigateUrl(target), UriKind.Relative);
         }
+
+        /// <summary>
+        /// Navigates to the specified path
+        /// </summary>
+        /// <param name="path">The Uri path to navigate to.</param>
+        public static void NavigateTo(Uri path)
+        {
+            App.RootFrame.Navigate(path);
+        }
+
+        /// <summary>
+        /// Navigates to the specified path
+        /// </summary>
+        /// <param name="path">The Url path to navigate to.</param>
+        public static void NavigateTo(string path)
+        {
+            NavigateTo(new Uri(path, UriKind.Relative));
+        }
+
+        /// <summary>
+        /// Navigates to the specified path
+        /// </summary>
+        /// <param name="target">The target to navigate to.</param>
+        public static void NavigateTo(NavigationTarget target)
+        {
+            NavigateTo(GenerateNavigateUrl(target));
+        }
     }
 }
