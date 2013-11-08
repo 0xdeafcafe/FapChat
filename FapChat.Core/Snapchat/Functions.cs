@@ -32,15 +32,17 @@ namespace FapChat.Core.Snapchat
             {
                 case HttpStatusCode.OK:
                 {
-                    // Shit worked
+                    // Http Request Worked
                     var data = await response.Content.ReadAsStringAsync();
                     var parsedData = await JsonConvert.DeserializeObjectAsync<Account>(data);
+
+                    // Check if we were logged in
+                    if (!parsedData.Logged) return TempEnumHolder.LoginStatus.InvalidCredentials;
+
+                    // Yup, save the data and return true
+                    Storage.UserAccount = parsedData;
                     return TempEnumHolder.LoginStatus.Success;
                 }
-                case HttpStatusCode.Forbidden:
-                    // Hacker
-                    return TempEnumHolder.LoginStatus.InvalidCredentials;
-
                 default:
                     // Well, fuck
                     return TempEnumHolder.LoginStatus.ServerError;
