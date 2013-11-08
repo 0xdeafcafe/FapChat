@@ -79,7 +79,7 @@ namespace FapChat.Core.Snapchat
         public void Load()
         {
             // Load Account Data
-            _userAccount = _appSettings.Contains("user-account") ? JsonConvert.DeserializeObject<Account>(_appSettings["credentialVault"].ToString()) : null;
+            _userAccount = _appSettings.Contains("user-account") ? JsonConvert.DeserializeObject<Account>(_appSettings["user-account"].ToString()) : null;
         }
     }
 }
