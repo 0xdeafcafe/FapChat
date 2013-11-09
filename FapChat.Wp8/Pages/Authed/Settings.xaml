@@ -4,16 +4,25 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+	xmlns:converters="clr-namespace:FapChat.Wp8.Converters"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"    
     FontSize="{StaticResource PhoneFontSizeNormal}"
     Foreground="{StaticResource PhoneForegroundBrush}"
     SupportedOrientations="Portrait"  Orientation="Portrait"
     shell:SystemTray.IsVisible="True"
     shell:SystemTray.BackgroundColor="#e9c109"
     shell:SystemTray.ForegroundColor="#000000">
+	<phone:PhoneApplicationPage.Resources>
+        <converters:VipBoolToFriendlyConverter x:Key="IValueVipToFriendly"/>
+    </phone:PhoneApplicationPage.Resources>
+	<phone:PhoneApplicationPage.ApplicationBar>
+		<shell:ApplicationBar BackgroundColor="{StaticResource FapAccent}" Mode="Default">
+			<shell:ApplicationBarIconButton x:Name="ButtonLogout" IconUri="/Assets/AppBar/download.png" IsEnabled="True" Text="Logout" Click="ButtonLogout_Click"/>
+		</shell:ApplicationBar>
+	</phone:PhoneApplicationPage.ApplicationBar>
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="#FFFFFF">
@@ -22,13 +31,13 @@
         		<SolidColorBrush Color="{StaticResource FapAccent}"/>
         	</Rectangle.Fill></Rectangle>
         <!--Pivot Control-->
-        <phone:Pivot Title="FAPCHAT" Padding="10,40,0,0">
+        <phone:Pivot Title="FAPCHAT" Padding="10,0,0,0">
             <!--Pivot item one-->
             <phone:PivotItem Header="account">
-                <Grid>
+                <ScrollViewer>
                     <StackPanel>
                     	<TextBlock Text="username" Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0"/>
-                    	<TextBlock Text="alexerax" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    	<TextBlock Text="{Binding UserName}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
                     		<TextBlock.Foreground>
                     			<SolidColorBrush Color="{StaticResource FapAccent}"/>
                     		</TextBlock.Foreground>
@@ -37,42 +46,49 @@
 						<Grid Style="{StaticResource GridMenuSpacer}"></Grid>
 
                     	<TextBlock Text="snap's sent" Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0"/>
-                    	<TextBlock Text="69" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    	<TextBlock Text="{Binding Sent}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
                     		<TextBlock.Foreground>
                     			<SolidColorBrush Color="{StaticResource FapAccent}"/>
                     		</TextBlock.Foreground>
                     	</TextBlock>
+
                     	<Grid Style="{StaticResource GridMenuSpacer}"/>
+
                     	<TextBlock Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0" Text="snap's received"/>
-                    	<TextBlock Text="117" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    	<TextBlock Text="{Binding Recieved}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
                     		<TextBlock.Foreground>
                     			<SolidColorBrush Color="{StaticResource FapAccent}"/>
                     		</TextBlock.Foreground>
                     	</TextBlock>
+
                     	<Grid Style="{StaticResource GridMenuSpacer}"/>
+
                     	<TextBlock Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0" Text="score"/>
-                    	<TextBlock Text="1,337" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    	<TextBlock Text="{Binding Score}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
                     		<TextBlock.Foreground>
                     			<SolidColorBrush Color="{StaticResource FapAccent}"/>
                     		</TextBlock.Foreground>
                     	</TextBlock>
+
                     	<Grid Style="{StaticResource GridMenuSpacer}"/>
+
                     	<TextBlock Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0" Text="account type"/>
-                    	<TextBlock Text="VIP/Standard" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    	<TextBlock Text="{Binding Path=IsVip, Converter={StaticResource IValueVipToFriendly}}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
                     		<TextBlock.Foreground>
                     			<SolidColorBrush Color="{StaticResource FapAccent}"/>
                     		</TextBlock.Foreground>
                     	</TextBlock>
+
                     	<Grid Style="{StaticResource GridMenuSpacer}"/>
+
                     	<TextBlock Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0" Text="email"/>
-                    	<TextBlock Text="alex@outlook.com" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
-                    		<TextBlock.Foreground>
-                    			<SolidColorBrush Color="{StaticResource FapAccent}"/>
-                    		</TextBlock.Foreground>
-                    	</TextBlock>
-                        
+                        <TextBlock Text="{Binding Email}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                            <TextBlock.Foreground>
+                                <SolidColorBrush Color="{StaticResource FapAccent}"/>
+                            </TextBlock.Foreground>
+                        </TextBlock>
                     </StackPanel>
-                </Grid>
+                </ScrollViewer>
             </phone:PivotItem>
 
             <!--Pivot item two-->

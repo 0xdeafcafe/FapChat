@@ -54,5 +54,33 @@ namespace FapChat.Core.Snapchat
                             TempEnumHolder.LoginStatus.ServerError, null);
             }
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="username"></param>
+        /// <param name="authToken"></param>
+        public static async void Logout(string username, string authToken)
+        {
+            var timestamp = Timestamps.GenerateRetardedTimestamp();
+            var postData = new Dictionary<string, string>
+		    {
+                { "json", "{}" },
+		        { "username", username },
+                { "timestamp", timestamp }
+		    };
+            var response = await WebRequests.Post("logout", postData, authToken, timestamp);
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    {
+                        // Yup, save the data and return true
+                        return;
+                    }
+                default:
+                    // Well, fuck
+                    return;
+            }
+        }
     }
 }

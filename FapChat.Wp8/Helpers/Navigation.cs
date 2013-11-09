@@ -11,6 +11,7 @@ namespace FapChat.Wp8.Helpers
         {
             Capture,
             Settings,
+            Friends,
             Login
         }
 
@@ -28,6 +29,9 @@ namespace FapChat.Wp8.Helpers
 
                 case NavigationTarget.Settings:
                     return "/Pages/Authed/Settings.xaml";
+
+                case NavigationTarget.Friends:
+                    return "/Pages/Authed/Friends.xaml";
 
                 case NavigationTarget.Login:
                 default:

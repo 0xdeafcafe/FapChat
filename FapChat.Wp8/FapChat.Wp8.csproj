@@ -27,6 +27,7 @@
     <ThrowErrorsInValidation>true</ThrowErrorsInValidation>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <ExpressionBlendVersion>12.0.40822.30</ExpressionBlendVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -95,10 +96,14 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\VipBoolToFriendlyConverter.cs" />
     <Compile Include="Helpers\Navigation.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Pages\Authed\Capture.xaml.cs">
       <DependentUpon>Capture.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Authed\Friends.xaml.cs">
+      <DependentUpon>Friends.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Authed\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -122,6 +127,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\Authed\Friends.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Authed\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -140,8 +149,45 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Assets\AlignmentGrid.png" />
+    <Content Include="Assets\AppBar\add.png" />
+    <Content Include="Assets\AppBar\appbar.group.png" />
+    <Content Include="Assets\AppBar\appbar.people.profile.png" />
+    <Content Include="Assets\AppBar\back.png" />
     <Content Include="Assets\AppBar\basecircle.png" />
+    <Content Include="Assets\AppBar\cancel.png" />
+    <Content Include="Assets\AppBar\check.png" />
+    <Content Include="Assets\AppBar\close.png" />
+    <Content Include="Assets\AppBar\delete.png" />
+    <Content Include="Assets\AppBar\download.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Assets\AppBar\edit.png" />
+    <Content Include="Assets\AppBar\favs.addto.png" />
+    <Content Include="Assets\AppBar\favs.png" />
+    <Content Include="Assets\AppBar\feature.alarm.png" />
+    <Content Include="Assets\AppBar\feature.calendar.png" />
+    <Content Include="Assets\AppBar\feature.camera.png" />
+    <Content Include="Assets\AppBar\feature.email.png" />
+    <Content Include="Assets\AppBar\feature.phone.png" />
+    <Content Include="Assets\AppBar\feature.search.png" />
     <Content Include="Assets\AppBar\feature.settings.png" />
+    <Content Include="Assets\AppBar\feature.video.png" />
+    <Content Include="Assets\AppBar\folder.png" />
+    <Content Include="Assets\AppBar\like.png" />
+    <Content Include="Assets\AppBar\microphone.png" />
+    <Content Include="Assets\AppBar\minus.png" />
+    <Content Include="Assets\AppBar\new.png" />
+    <Content Include="Assets\AppBar\next.png" />
+    <Content Include="Assets\AppBar\overflowdots.png" />
+    <Content Include="Assets\AppBar\questionmark.png" />
+    <Content Include="Assets\AppBar\refresh.png" />
+    <Content Include="Assets\AppBar\save.png" />
+    <Content Include="Assets\AppBar\share.png" />
+    <Content Include="Assets\AppBar\stop.png" />
+    <Content Include="Assets\AppBar\transport.ff.png" />
+    <Content Include="Assets\AppBar\transport.pause.png" />
+    <Content Include="Assets\AppBar\transport.play.png" />
+    <Content Include="Assets\AppBar\transport.rew.png" />
     <Content Include="Assets\AppBar\upload.png" />
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -193,6 +239,9 @@
     <Reference Include="System.Net.Http.Primitives">
       <HintPath>..\packages\Microsoft.Net.Http.2.2.15\lib\sl4-windowsphone71\System.Net.Http.Primitives.dll</HintPath>
     </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\AppBar\sync.png" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).$(TargetFrameworkVersion).Overrides.targets" />
   <Import Project="$(MSBuildExtensionsPath)\Microsoft\$(TargetFrameworkIdentifier)\$(TargetFrameworkVersion)\Microsoft.$(TargetFrameworkIdentifier).CSharp.targets" />

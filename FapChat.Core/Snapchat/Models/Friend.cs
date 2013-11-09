@@ -3,6 +3,13 @@ using Newtonsoft.Json;
 
 namespace FapChat.Core.Snapchat.Models
 {
+    public enum FriendType
+    {
+        Accepted = 0x00,
+        PendingAccept = 0x01,
+        Blocked = 0x02
+    }
+
     /// <summary>
     /// 
     /// </summary>
@@ -30,6 +37,6 @@ namespace FapChat.Core.Snapchat.Models
         /// 
         /// </summary>
         [JsonPropertyAttribute("type")]
-        public Int32 Type { get; set; }
+        public FriendType Type { get; set; }
     }
 }

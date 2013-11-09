@@ -8,15 +8,15 @@ namespace FapChat.Core.Snapchat.Helpers
     public static class Tokens
     {
         /// <summary>
-        /// 
+        /// Generates a Request Token from Post Data and a Static Token
         /// </summary>
-        /// <param name="param1"></param>
-        /// <param name="param2"></param>
-        /// <returns></returns>
-        public static string GenerateRequestToken(string param1, string param2)
+        /// <param name="postData">The Html Encoded Post Data</param>
+        /// <param name="staticToken">The Snapchat Static Token.</param>
+        /// <returns>The Request Token, all nice.</returns>
+        public static string GenerateRequestToken(string postData, string staticToken)
         {
-            var s1 = KeyVault.Secret + param1;
-            var s2 = param2 + KeyVault.Secret;
+            var s1 = KeyVault.Secret + postData;
+            var s2 = staticToken + KeyVault.Secret;
 
             var s3 = Sha.Sha256(s1);
             var s4 = Sha.Sha256(s2);

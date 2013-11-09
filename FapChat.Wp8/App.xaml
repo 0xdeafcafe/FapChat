@@ -39,8 +39,8 @@
         							</VisualState>
         							<VisualState x:Name="Disabled">
         								<Storyboard>
-        									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ButtonBackground">
-        										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource FapAccentDisabled}"/>
+                                            <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Backgrond" Storyboard.TargetName="ButtonBackground">
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="#EEEEEE"/>
         									</ObjectAnimationUsingKeyFrames>
         								</Storyboard>
         							</VisualState>
@@ -51,6 +51,49 @@
 									Margin="{StaticResource PhoneTouchTargetOverhang}" toolkit:TiltEffect.IsTiltEnabled="True">
         						<Border x:Name="Content" Background="{TemplateBinding Background}">
 								</Border>
+        					</Border>
+        				</Grid>
+        			</ControlTemplate>
+        		</Setter.Value>
+        	</Setter>
+        </Style>
+        <Style x:Key="FapChatPrimaryButton" TargetType="Button">
+        	<Setter Property="Background" Value="Transparent"/>
+        	<Setter Property="BorderBrush" Value="{StaticResource PhoneForegroundBrush}"/>
+        	<Setter Property="Foreground" Value="{StaticResource PhoneForegroundBrush}"/>
+        	<Setter Property="BorderThickness" Value="{StaticResource PhoneBorderThickness}"/>
+        	<Setter Property="FontFamily" Value="{StaticResource PhoneFontFamilySemiBold}"/>
+        	<Setter Property="FontSize" Value="{StaticResource PhoneFontSizeMedium}"/>
+        	<Setter Property="Padding" Value="0,8,0,8"/>
+        	<Setter Property="Template">
+        		<Setter.Value>
+        			<ControlTemplate TargetType="Button">
+        				<Grid Background="Transparent">
+        					<VisualStateManager.VisualStateGroups>
+        						<VisualStateGroup x:Name="CommonStates">
+        							<VisualState x:Name="Normal"/>
+        							<VisualState x:Name="MouseOver"/>
+        							<VisualState x:Name="Pressed">
+        								<Storyboard>
+        									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Background" Storyboard.TargetName="ButtonBackground">
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource FapAccent}"/>
+        									</ObjectAnimationUsingKeyFrames>
+        								</Storyboard>
+        							</VisualState>
+        							<VisualState x:Name="Disabled">
+        								<Storyboard>
+        									<ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="BorderBrush" Storyboard.TargetName="ButtonBackground">
+        										<DiscreteObjectKeyFrame KeyTime="0" Value="{StaticResource FapAccentDisabled}"/>
+        									</ObjectAnimationUsingKeyFrames>
+        								</Storyboard>
+        							</VisualState>
+        						</VisualStateGroup>
+        					</VisualStateManager.VisualStateGroups>
+        					<Border x:Name="ButtonBackground" CornerRadius="0" Margin="{StaticResource PhoneTouchTargetOverhang}" toolkit:TiltEffect.IsTiltEnabled="True">
+        						<Border.Background>
+        							<SolidColorBrush Color="{StaticResource FapAccent}"/>
+        						</Border.Background>
+        						<ContentControl x:Name="ContentContainer" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
         					</Border>
         				</Grid>
         			</ControlTemplate>

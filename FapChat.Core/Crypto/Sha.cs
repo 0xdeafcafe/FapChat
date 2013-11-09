@@ -5,8 +5,16 @@ using System.Text;
 
 namespace FapChat.Core.Crypto
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class Sha
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public static string Sha256(string data)
         {
             var bytes = Encoding.UTF8.GetBytes(data);

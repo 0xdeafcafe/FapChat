@@ -17,17 +17,27 @@
     <Grid x:Name="LayoutRoot" Background="Transparent">
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel">
-            <Canvas x:Name="ViewfinderCanvas">
+            <Canvas x:Name="ViewfinderCanvas" Visibility="Collapsed">
                 <!--Camera viewfinder -->
                 <Canvas.Background>
                     <VideoBrush x:Name="ViewfinderBrush" />
                 </Canvas.Background>
             </Canvas>
 
-			<Button x:Name="ButtonSettings" Style="{StaticResource CaptureActionButtonSmall}" Width="80" Height="80" Margin="0,0,10,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="ButtonSettings_Click">
-				<Button.Background>
-					<ImageBrush Stretch="Fill" ImageSource="/Assets/AppBar/feature.settings.png"/>
-				</Button.Background>
+            <Button x:Name="ButtonSettings" Style="{StaticResource CaptureActionButtonSmall}" Width="80" Height="80" Margin="0,0,10,10" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="ButtonSettings_Click">
+                <Button.Background>
+                    <ImageBrush Stretch="Fill" ImageSource="/Assets/AppBar/feature.settings.png"/>
+                </Button.Background>
+            </Button>
+            <Button x:Name="ButtonSwitchCamera" Style="{StaticResource CaptureActionButtonSmall}" Width="80" Height="80" Margin="0,0,390,710" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="ButtonSwitchCamera_Click">
+            	<Button.Background>
+            		<ImageBrush Stretch="Fill" ImageSource="/Assets/AppBar/sync.png"/>
+            	</Button.Background>
+            </Button>
+            <Button x:Name="ButtonViewFriends" Style="{StaticResource CaptureActionButtonSmall}" Width="80" Height="80" Margin="0,0,10,710" VerticalAlignment="Bottom" HorizontalAlignment="Right" Click="ButtonViewFriends_Click">
+                <Button.Background>
+                    <ImageBrush Stretch="Fill" ImageSource="/Assets/AppBar/appbar.people.profile.png"/>
+                </Button.Background>
             </Button>
         </Grid>
     </Grid>
