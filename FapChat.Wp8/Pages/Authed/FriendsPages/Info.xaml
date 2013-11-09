@@ -6,6 +6,7 @@
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:converters="clr-namespace:FapChat.Wp8.Converters"
     mc:Ignorable="d"
     FontFamily="{StaticResource PhoneFontFamilyNormal}"    
     FontSize="{StaticResource PhoneFontSizeNormal}"
@@ -15,11 +16,14 @@
     shell:SystemTray.IsVisible="True"
     shell:SystemTray.BackgroundColor="#e9c109"
     shell:SystemTray.ForegroundColor="#000000">
+    <phone:PhoneApplicationPage.Resources>
+        <converters:DisplayNameToFriendly x:Key="IValueDisplayNameToFriendly"/>
+    </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar BackgroundColor="{StaticResource FapAccent}" Mode="Default">
-            <shell:ApplicationBarIconButton x:Name="ButtonDelete" IconUri="/Assets/AppBar/delete.png" IsEnabled="True" Text="Delete" />
-            <shell:ApplicationBarIconButton x:Name="ButtonBlock" IconUri="/Assets/AppBar/close.png" IsEnabled="True" Text="Block" />
-            <shell:ApplicationBarIconButton x:Name="ButtonRename" IconUri="/Assets/AppBar/edit.png" IsEnabled="True" Text="Rename" />
+            <shell:ApplicationBarIconButton x:Name="ButtonDelete" IconUri="/Assets/AppBar/delete.png" IsEnabled="True" Text="Delete" Click="ButtonDelete_Click" />
+            <shell:ApplicationBarIconButton x:Name="ButtonBlock" IconUri="/Assets/AppBar/close.png" IsEnabled="True" Text="Block" Click="ButtonBlock_Click" />
+            <shell:ApplicationBarIconButton x:Name="ButtonRename" IconUri="/Assets/AppBar/edit.png" IsEnabled="True" Text="Rename" Click="ButtonRename_Click" />
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 
@@ -38,7 +42,7 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
             <TextBlock Text="FAPCHAT" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="LabelUserName" Text="" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock x:Name="LabelUserName" Text="{Binding}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -47,6 +51,15 @@
                 <StackPanel>
                     <TextBlock Text="score" Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0"/>
                     <TextBlock Text="{Binding Score}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                        <TextBlock.Foreground>
+                            <SolidColorBrush Color="{StaticResource FapAccent}"/>
+                        </TextBlock.Foreground>
+                    </TextBlock>
+
+                    <Grid Style="{StaticResource GridMenuSpacer}"></Grid>
+
+                    <TextBlock Text="display name" Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0"/>
+                    <TextBlock x:Name="LabelDisplayName" Text="{Binding Mode=OneWay, Converter={StaticResource IValueDisplayNameToFriendly}}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
                         <TextBlock.Foreground>
                             <SolidColorBrush Color="{StaticResource FapAccent}"/>
                         </TextBlock.Foreground>
@@ -69,6 +82,7 @@
                 </StackPanel>
             </ScrollViewer>
         </Grid>
+        <Rectangle x:Name="PendingOverlay" Grid.RowSpan="2" HorizontalAlignment="Stretch" Fill="#e9c109" Opacity="0.425" Visibility="Collapsed"/>
     </Grid>
 
 </phone:PhoneApplicationPage>

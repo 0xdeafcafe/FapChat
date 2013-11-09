@@ -69,7 +69,7 @@ namespace FapChat.Core.Snapchat
 		        { "username", username },
                 { "timestamp", timestamp }
 		    };
-            var response = await WebRequests.Post("update", postData, KeyVault.StaticToken, timestamp);
+            var response = await WebRequests.Post("updates", postData, authToken, timestamp);
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -145,6 +145,45 @@ namespace FapChat.Core.Snapchat
                     // Yup, save the data and return true
                     return parsedData;
                 }
+                default:
+                    // Well, fuck
+                    return null;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="action"></param>
+        /// <param name="username"></param>
+        /// <param name="authToken"></param>
+        /// <param name="friend"></param>
+        public static async Task<FriendAction> Friend(string friend, string action, string username, string authToken, Dictionary<string, string> postDataEntries = null)
+        {
+            var timestamp = Timestamps.GenerateRetardedTimestamp();
+            var postData = new Dictionary<string, string>
+		    {
+                { "friend", friend },
+                { "action", action },
+		        { "username", username },
+                { "timestamp", timestamp }
+		    };
+
+            if (postDataEntries != null)
+                foreach(var postDataEntry in postDataEntries)
+                    postData.Add(postDataEntry.Key, postDataEntry.Value);
+
+            var response = await WebRequests.Post("friend", postData, authToken, timestamp);
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    {
+                        var data = await response.Content.ReadAsStringAsync();
+                        var parsedData = await JsonConvert.DeserializeObjectAsync<FriendAction>(data);
+
+                        // Yup, save the data and return true
+                        return parsedData;
+                    }
                 default:
                     // Well, fuck
                     return null;

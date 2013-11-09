@@ -29,6 +29,17 @@ namespace FapChat.Core.Snapchat.Models
         }
         private String _message;
 
+        /// <summary>
+        /// The Optional param response
+        /// </summary>
+        [JsonPropertyAttribute("param")]
+        public String Param
+        {
+            get { return _param; }
+            set { SetField(ref _param, value, "Param"); }
+        }
+        private String _param;
+
         #region Boilerplate
 
         public event PropertyChangedEventHandler PropertyChanged;

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Navigation;
@@ -32,8 +33,21 @@ namespace FapChat.Wp8.Pages.Authed
             var username = App.IsolatedStorage.UserAccount.UserName;
             var authToken = App.IsolatedStorage.UserAccount.AuthToken;
 
-            var update = await Core.Snapchat.Functions.Update(username, authToken);
-            var bests = await Core.Snapchat.Functions.GetBests(App.IsolatedStorage.UserAccount.Friends, username, authToken);
+            var update = App.IsolatedStorage.UserAccount;
+            var bests = App.IsolatedStorage.FriendsBests;
+
+            if (App.IsolatedStorage.UserAccountLastUpdate + new TimeSpan(0, 0, 0, 30) < DateTime.UtcNow)
+            {
+                update = await Core.Snapchat.Functions.Update(username, authToken);
+                Debug.WriteLine("updated update");
+            }
+
+            if (App.IsolatedStorage.FriendsBestsLastUpdate + new TimeSpan(0, 0, 0, 30) < DateTime.UtcNow)
+            {
+                bests =
+                    await Core.Snapchat.Functions.GetBests(App.IsolatedStorage.UserAccount.Friends, username, authToken);
+                Debug.WriteLine("updated bests");
+            }
 
             SystemTray.SetProgressIndicator(this, new ProgressIndicator { IsVisible = false });
             if (update == null || bests == null)

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO.IsolatedStorage;
 using FapChat.Core.Snapchat.Models;
 using Newtonsoft.Json;
@@ -32,9 +33,13 @@ namespace FapChat.Core.Snapchat
 
                 // Save them to Isolated Storage
                 Save("user-account", JsonConvert.SerializeObject(value));
+
+                // Update the Last Updated data
+                UserAccountLastUpdate = DateTime.UtcNow;
             }
         }
         private Account _userAccount;
+        public DateTime UserAccountLastUpdate { get; private set; }
 
         /// <summary>
         /// Holds the Bests of an users friends
@@ -53,9 +58,13 @@ namespace FapChat.Core.Snapchat
 
                 // Save them to Isolated Storage
                 Save("friends-bests", JsonConvert.SerializeObject(value));
+
+                // Update the Last Updated data
+                FriendsBestsLastUpdate = DateTime.UtcNow;
             }
         }
         private Dictionary<string, Best> _friendsBests;
+        public DateTime FriendsBestsLastUpdate { get; private set; }
 
         /// <summary>
         /// Initalize the Isolated Storage Class
@@ -102,9 +111,11 @@ namespace FapChat.Core.Snapchat
         {
             // Load Account Data
             _userAccount = _appSettings.Contains("user-account") ? JsonConvert.DeserializeObject<Account>(_appSettings["user-account"].ToString()) : null;
+            UserAccountLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
 
             // Load Friends Bests
             _friendsBests = _appSettings.Contains("friends-bests") ? JsonConvert.DeserializeObject<Dictionary<string, Best>>(_appSettings["friends-bests"].ToString()) : null;
+            FriendsBestsLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
         }
     }
 }
