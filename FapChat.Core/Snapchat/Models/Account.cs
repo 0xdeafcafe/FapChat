@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace FapChat.Core.Snapchat.Models
@@ -7,17 +8,12 @@ namespace FapChat.Core.Snapchat.Models
     /// <summary>
     /// 
     /// </summary>
-    public class Account
+    public class Account : Base, INotifyPropertyChanged
     {
         // TODO
         // [JsonPropertyAttribute("bests")]
         // public String[] Bests { get; set; }
-
-        /// <summary>
-        /// The message explaining the error, if there was one
-        /// </summary>
-        public String Message { get; set; }
-
+        
         /// <summary>
         /// 
         /// </summary>
@@ -35,20 +31,19 @@ namespace FapChat.Core.Snapchat.Models
         /// </summary>
         [JsonPropertyAttribute("recieved")]
         public Int32 Recieved { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonPropertyAttribute("logged")]
-        public Boolean Logged { get; set; }
-
+        
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("added_friends")]
-        public List<AddedFriend> AddedFriends { get; set; }
+        public List<AddedFriend> AddedFriends
+        {
+            get { return _addedFriends; }
+            set { SetField(ref _addedFriends, value, "AddedFriends"); }
+        }
+        private List<AddedFriend> _addedFriends;
 
-        // TODO
+            // TODO
         // [JsonPropertyAttribute("requests")]
         // public String[] Requests { get; set; }
 
@@ -80,7 +75,12 @@ namespace FapChat.Core.Snapchat.Models
         /// 
         /// </summary>
         [JsonPropertyAttribute("friends")]
-        public List<Friend> Friends { get; set; }
+        public List<Friend> Friends
+        {
+            get { return _friends; }
+            set { SetField(ref _friends, value, "Friends"); }
+        }
+        private List<Friend> _friends;
 
         /// <summary>
         /// 
@@ -110,7 +110,12 @@ namespace FapChat.Core.Snapchat.Models
         /// 
         /// </summary>
         [JsonPropertyAttribute("added_friends_timestamp")]
-        public Int64 AddedFriendsTimestamp { get; set; }
+        public Int64 AddedFriendsTimestamp
+        {
+            get { return _addedFriendsTimestamp; }
+            set { SetField(ref _addedFriendsTimestamp, value, "AddedFriendsTimestamp"); }
+        }
+        private Int64 _addedFriendsTimestamp;
 
         /// <summary>
         /// 
@@ -165,5 +170,23 @@ namespace FapChat.Core.Snapchat.Models
         /// </summary>
         [JsonPropertyAttribute("mobile")]
         public String Mobile { get; set; }
+
+        #region Boilerplate
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+        }
+        protected bool SetField<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        #endregion
     }
 }

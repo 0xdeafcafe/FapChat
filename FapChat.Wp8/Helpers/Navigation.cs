@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Net;
 
 namespace FapChat.Wp8.Helpers
 {
@@ -12,6 +14,7 @@ namespace FapChat.Wp8.Helpers
             Capture,
             Settings,
             Friends,
+            FriendInfo,
             Login
         }
 
@@ -19,24 +22,48 @@ namespace FapChat.Wp8.Helpers
         /// Generates a Windows Phone Path Url to the target you want to navigate to
         /// </summary>
         /// <param name="target">The target to navigate to</param>
+        /// <param name="queryParams">Optional extra query string params.</param>
         /// <returns>A string representation of the path</returns>
-        public static string GenerateNavigateUrl(NavigationTarget target)
+        public static string GenerateNavigateUrl(NavigationTarget target, Dictionary<string, string> queryParams = null)
         {
+            string path;
             switch (target)
             {
                 case NavigationTarget.Capture:
-                    return "/Pages/Authed/Capture.xaml";
+                    path = "/Pages/Authed/Capture.xaml";
+                    break;
 
                 case NavigationTarget.Settings:
-                    return "/Pages/Authed/Settings.xaml";
+                    path = "/Pages/Authed/Settings.xaml";
+                    break;
 
                 case NavigationTarget.Friends:
-                    return "/Pages/Authed/Friends.xaml";
+                    path = "/Pages/Authed/Friends.xaml";
+                    break;
+
+                case NavigationTarget.FriendInfo:
+                    path = "/Pages/Authed/FriendsPages/Info.xaml";
+                    break;
 
                 case NavigationTarget.Login:
                 default:
-                    return "/Pages/Login.xaml";
+                    path = "/Pages/Login.xaml";
+                    break;
             }
+
+            if (queryParams == null) return path;
+
+            var first = true;
+            foreach (var queryParam in queryParams)
+            {
+                if (first)
+                    path += string.Format("?{0}={1}", queryParam.Key, HttpUtility.HtmlEncode(queryParam.Value));
+                else
+                    path += string.Format("&{0}={1}", queryParam.Key, HttpUtility.HtmlEncode(queryParam.Value));
+
+                first = false;
+            }
+            return path;
         }
 
         /// <summary>
@@ -70,10 +97,11 @@ namespace FapChat.Wp8.Helpers
         /// <summary>
         /// Navigates to the specified path
         /// </summary>
-        /// <param name="target">The target to navigate to. </param>
-        public static void NavigateTo(NavigationTarget target)
+        /// <param name="target">The target to navigate to.</param>
+        /// <param name="queryParams">Optional extra query string params.</param>
+        public static void NavigateTo(NavigationTarget target, Dictionary<string, string> queryParams = null)
         {
-            NavigateTo(GenerateNavigateUrl(target));
+            NavigateTo(GenerateNavigateUrl(target, queryParams));
         }
     }
 }

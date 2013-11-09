@@ -87,6 +87,8 @@
                                 <SolidColorBrush Color="{StaticResource FapAccent}"/>
                             </TextBlock.Foreground>
                         </TextBlock>
+                        
+                        <Grid Style="{StaticResource GridMenuSpacer}"></Grid>
                     </StackPanel>
                 </ScrollViewer>
             </phone:PivotItem>

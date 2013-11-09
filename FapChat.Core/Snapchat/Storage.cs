@@ -37,6 +37,27 @@ namespace FapChat.Core.Snapchat
         private Account _userAccount;
 
         /// <summary>
+        /// Holds the Bests of an users friends
+        /// </summary>
+        public Dictionary<string, Best> FriendsBests
+        {
+            get
+            {
+                // Return the Account Details
+                return _friendsBests;
+            }
+            set
+            {
+                // Set the Account Details
+                _friendsBests = value;
+
+                // Save them to Isolated Storage
+                Save("friends-bests", JsonConvert.SerializeObject(value));
+            }
+        }
+        private Dictionary<string, Best> _friendsBests;
+
+        /// <summary>
         /// Initalize the Isolated Storage Class
         /// </summary>
         public Storage()
@@ -51,7 +72,8 @@ namespace FapChat.Core.Snapchat
         {
             var storageData = new Dictionary<string, object>
             {
-                { "user-account", _userAccount }
+                { "user-account", _userAccount },
+                { "friends-bests", _friendsBests }
             };
 
             foreach (var data in storageData)
@@ -80,6 +102,9 @@ namespace FapChat.Core.Snapchat
         {
             // Load Account Data
             _userAccount = _appSettings.Contains("user-account") ? JsonConvert.DeserializeObject<Account>(_appSettings["user-account"].ToString()) : null;
+
+            // Load Friends Bests
+            _friendsBests = _appSettings.Contains("friends-bests") ? JsonConvert.DeserializeObject<Dictionary<string, Best>>(_appSettings["friends-bests"].ToString()) : null;
         }
     }
 }

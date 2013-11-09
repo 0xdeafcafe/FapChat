@@ -45,6 +45,8 @@ namespace FapChat.Wp8.Pages
         {
             PagePivot.Focus();
             PendingOverlay.Visibility = Visibility.Visible;
+            ((ApplicationBarIconButton) ApplicationBar.Buttons[0]).IsEnabled = false;
+            ApplicationBar.IsMenuEnabled = false;
             var progress = new ProgressIndicator
             {
                 IsVisible = true,
@@ -71,12 +73,23 @@ namespace FapChat.Wp8.Pages
                             break;
 
                          case TempEnumHolder.LoginStatus.Success:
-                            // Save Acount Data
-                            App.IsolatedStorage.UserAccount = repsonse.Item2;
+                            // Tell User we be syncing
+                            progress.Text = "Syncing with Snapchat securely...";
+                            SystemTray.SetProgressIndicator(this, progress);
 
-                            // Navigate to Capture Page
-                            NavigationService.Navigate(
-                                Navigation.GenerateNavigateUri(Navigation.NavigationTarget.Capture));
+                            // Sync Other Shit
+                            var bests = await Functions.GetBests(repsonse.Item2.Friends, repsonse.Item2.UserName, repsonse.Item2.AuthToken);
+                            if (bests != null)
+                            {
+                                App.IsolatedStorage.UserAccount = repsonse.Item2;
+                                App.IsolatedStorage.FriendsBests = bests;
+
+                                // Navigate to Capture Page
+                                NavigationService.Navigate(
+                                    Navigation.GenerateNavigateUri(Navigation.NavigationTarget.Capture));
+                            }
+                            else
+                                MessageBox.Show("Unable to sync with Snapchat's servers. Check your internet connection and try logging in again.", "Syncing Error", MessageBoxButton.OK);
                             break;
                     }
                     break;
@@ -89,13 +102,10 @@ namespace FapChat.Wp8.Pages
             }
 
             PendingOverlay.Visibility = Visibility.Collapsed;
-            progress = new ProgressIndicator
-            {
-                IsVisible = false,
-                IsIndeterminate = true,
-                Text = "Waiting for Instructions..."
-            };
+            progress = new ProgressIndicator { IsVisible = false };
             SystemTray.SetProgressIndicator(this, progress);
+            ((ApplicationBarIconButton)ApplicationBar.Buttons[0]).IsEnabled = true;
+            ApplicationBar.IsMenuEnabled = true;
         }
 
         private void TextUsername_KeyUp(object sender, KeyEventArgs e)
