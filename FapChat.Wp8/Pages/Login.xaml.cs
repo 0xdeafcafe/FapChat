@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using FapChat.Core.Snapchat;
 using FapChat.Wp8.Helpers;
 using Microsoft.Phone.Controls;
@@ -20,6 +21,17 @@ namespace FapChat.Wp8.Pages
         public Login()
         {
             InitializeComponent();
+        }
+
+        protected override void OnNavigatedTo(NavigationEventArgs e)
+        {
+            // Delete Everything
+            App.IsolatedStorage.Reset();
+
+            while (NavigationService.CanGoBack)
+                NavigationService.RemoveBackEntry();
+
+            base.OnNavigatedTo(e);
         }
 
         private void Pivot_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)

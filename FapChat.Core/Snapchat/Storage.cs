@@ -117,5 +117,17 @@ namespace FapChat.Core.Snapchat
             _friendsBests = _appSettings.Contains("friends-bests") ? JsonConvert.DeserializeObject<Dictionary<string, Best>>(_appSettings["friends-bests"].ToString()) : null;
             FriendsBestsLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
         }
+
+        /// <summary>
+        /// Deletes everything in Isolated Storage, and resets the Timestamps
+        /// </summary>
+        public void Reset()
+        {
+            UserAccount = null;
+            UserAccountLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
+
+            FriendsBests = null;
+            FriendsBestsLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
+        }
     }
 }

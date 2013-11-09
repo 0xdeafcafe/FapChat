@@ -53,6 +53,9 @@ namespace FapChat.Wp8.Pages.Authed
             if (update == null || bests == null)
             {
                 // TODO: Signout
+                Navigation.NavigateTo(Navigation.NavigationTarget.Login);
+                MessageBox.Show("You are not authorized, please log back in.", "Unable to authenticate",
+                    MessageBoxButton.OK);
             }
             else
             {
