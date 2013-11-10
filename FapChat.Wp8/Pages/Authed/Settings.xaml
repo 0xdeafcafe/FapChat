@@ -20,7 +20,7 @@
     </phone:PhoneApplicationPage.Resources>
 	<phone:PhoneApplicationPage.ApplicationBar>
 		<shell:ApplicationBar BackgroundColor="{StaticResource FapAccent}" Mode="Default">
-			<shell:ApplicationBarIconButton x:Name="ButtonLogout" IconUri="/Assets/AppBar/download.png" IsEnabled="True" Text="Logout" Click="ButtonLogout_Click"/>
+			<shell:ApplicationBarIconButton x:Name="ButtonLogout" IconUri="/Assets/AppBar/cancel.png" IsEnabled="True" Text="Logout" Click="ButtonLogout_Click"/>
 		</shell:ApplicationBar>
 	</phone:PhoneApplicationPage.ApplicationBar>
 
@@ -100,7 +100,84 @@
 
             <!--Pivot item three-->
             <phone:PivotItem Header="about">
-                <Grid/>
+				<ScrollViewer>
+					<StackPanel>
+						<!-- le top -->
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="180" />
+								<ColumnDefinition Width="30" />
+								<ColumnDefinition Width="*" />
+							</Grid.ColumnDefinitions>
+
+							<Image Grid.Column="0" Height="180" Source="/Assets/AlignmentGrid.png" />
+
+							<StackPanel Grid.Column="2" Margin="0,5,0,0">
+								<TextBlock Text="developer" Foreground="#FF616161" FontSize="24" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0"/>
+                    			<TextBlock Text="Alex Reed" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    				<TextBlock.Foreground>
+                    					<SolidColorBrush Color="{StaticResource FapAccent}"/>
+                    				</TextBlock.Foreground>
+                    			</TextBlock>
+
+								<Grid Height="5"></Grid>
+								
+								<TextBlock Text="graphics" Foreground="#FF616161" FontSize="24" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0"/>
+                    			<TextBlock Text="Alex Greogirson" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    				<TextBlock.Foreground>
+                    					<SolidColorBrush Color="{StaticResource FapAccent}"/>
+                    				</TextBlock.Foreground>
+                    			</TextBlock>
+								
+								<Grid Height="5"></Grid>
+								
+								<TextBlock Text="based on" Foreground="#FF616161" FontSize="24" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0"/>
+                    			<TextBlock Text="The Snapchat Team" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    				<TextBlock.Foreground>
+                    					<SolidColorBrush Color="{StaticResource FapAccent}"/>
+                    				</TextBlock.Foreground>
+                    			</TextBlock>
+							</StackPanel>
+						</Grid>
+
+						<!-- le thanks to -->
+						<TextBlock Text="special thanks to" Foreground="#FF616161" FontSize="26.667" FontFamily="Segoe WP Semibold" Margin="0,30,10,0"/>
+						<StackPanel Grid.Column="2" Margin="0,0,0,0">
+                    		<TextBlock Text="The Snapchat Team (again)" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    			<TextBlock.Foreground>
+                    				<SolidColorBrush Color="{StaticResource FapAccent}"/>
+                    			</TextBlock.Foreground>
+                    		</TextBlock>
+                    		<TextBlock Text="Other People..." FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    			<TextBlock.Foreground>
+                    				<SolidColorBrush Color="{StaticResource FapAccent}"/>
+                    			</TextBlock.Foreground>
+                    		</TextBlock>
+						</StackPanel>
+
+						<!-- le dlls -->
+						<TextBlock Text="libraries used" Foreground="#FF616161" FontSize="26.667" FontFamily="Segoe WP Semibold" Margin="0,30,10,0"/>
+						<StackPanel Grid.Column="2" Margin="0,0,0,0">
+                    		<TextBlock Text="JSON.net - Newtonsoft" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    			<TextBlock.Foreground>
+                    				<SolidColorBrush Color="{StaticResource FapAccent}"/>
+                    			</TextBlock.Foreground>
+                    		</TextBlock>
+
+                    		<TextBlock Text="WPToolkit - Microsoft" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    			<TextBlock.Foreground>
+                    				<SolidColorBrush Color="{StaticResource FapAccent}"/>
+                    			</TextBlock.Foreground>
+                    		</TextBlock>
+
+                    		<TextBlock Text="Windows Phone 8 Controls - Telerik" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    			<TextBlock.Foreground>
+                    				<SolidColorBrush Color="{StaticResource FapAccent}"/>
+                    			</TextBlock.Foreground>
+                    		</TextBlock>
+						</StackPanel>
+					</StackPanel>
+				</ScrollViewer>
             </phone:PivotItem>
         </phone:Pivot>
     </Grid>

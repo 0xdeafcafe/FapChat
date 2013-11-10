@@ -44,7 +44,7 @@
 
     <phone:PhoneApplicationPage.ApplicationBar >
         <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" BackgroundColor="#FFE9C109">
-            <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/upload.png" Text="Login" Click="ApplicationBarActionButton_Click"/>
+            <shell:ApplicationBarIconButton Text="Login" Click="ApplicationBarActionButton_Click" IconUri="/Assets/AppBar/check.png"/>
             <shell:ApplicationBar.MenuItems>
                 <shell:ApplicationBarMenuItem Text="Legal shit"/>
             </shell:ApplicationBar.MenuItems>
