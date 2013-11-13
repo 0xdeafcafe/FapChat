@@ -12,6 +12,7 @@ namespace FapChat.Wp8.Helpers
         public enum NavigationTarget
         {
             Capture,
+            Messages,
             Settings,
             Friends,
             FriendInfo,
@@ -31,6 +32,10 @@ namespace FapChat.Wp8.Helpers
             {
                 case NavigationTarget.Capture:
                     path = "/Pages/Authed/Capture.xaml";
+                    break;
+
+                 case NavigationTarget.Messages:
+                    path = "/Pages/Authed/Messages.xaml";
                     break;
 
                 case NavigationTarget.Settings:

@@ -1,36 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace FapChat.Core.Snapchat.Models
 {
     /// <summary>
+    /// Types of Privacy that Snapchat Offer
+    /// </summary>
+    public enum PrivacyType
+    {
+        Everyone = 0x00,
+        Friends = 0x01
+    }
+
+    /// <summary>
     /// 
     /// </summary>
-    public class Account : Base, INotifyPropertyChanged
+    public class Account : Base
     {
         // TODO
         // [JsonPropertyAttribute("bests")]
         // public String[] Bests { get; set; }
-        
-        /// <summary>
-        /// 
-        /// </summary>
-        [JsonPropertyAttribute("is_vip")]
-        public Boolean IsVip { get; set; }
 
         /// <summary>
-        /// 
+        /// Says if the User is VIP or not
+        /// </summary>
+        [JsonPropertyAttribute("is_vip")]
+        public Boolean IsVip
+        {
+            get { return _isVip; }
+            set { SetField(ref _isVip, value, "IsVip"); }
+        }
+        private Boolean _isVip;
+
+        /// <summary>
+        /// The Users Score
         /// </summary>
         [JsonPropertyAttribute("score")]
-        public Int32 Score { get; set; }
+        public Int32 Score
+        {
+            get { return _score; }
+            set { SetField(ref _score, value, "Score"); }
+        }
+        private Int32 _score;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("recieved")]
-        public Int32 Recieved { get; set; }
+        public Int32 Recieved
+        {
+            get { return _recieved; }
+            set { SetField(ref _recieved, value, "Recieved"); }
+        }
+        private Int32 _recieved;
         
         /// <summary>
         /// 
@@ -43,7 +66,7 @@ namespace FapChat.Core.Snapchat.Models
         }
         private List<AddedFriend> _addedFriends;
 
-            // TODO
+        // TODO
         // [JsonPropertyAttribute("requests")]
         // public String[] Requests { get; set; }
 
@@ -51,25 +74,45 @@ namespace FapChat.Core.Snapchat.Models
         /// 
         /// </summary>
         [JsonPropertyAttribute("sent")]
-        public Int32 Sent { get; set; }
+        public Int32 Sent
+        {
+            get { return _sent; }
+            set { SetField(ref _sent, value, "Sent"); }
+        }
+        private Int32 _sent;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("story_privacy")]
-        public String StoryPrivacy { get; set; }
+        public String StoryPrivacy
+        {
+            get { return _storyPrivacy; }
+            set { SetField(ref _storyPrivacy, value, "StoryPrivacy"); }
+        }
+        private String _storyPrivacy;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("username")]
-        public String UserName { get; set; }
+        public String UserName
+        {
+            get { return _userName; }
+            set { SetField(ref _userName, value, "UserName"); }
+        }
+        private String _userName;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("snaps")]
-        public List<Snap> Snaps { get; set; }
+        public List<Snap> Snaps
+        {
+            get { return _snaps; }
+            set { SetField(ref _snaps, value, "Snaps"); }
+        }
+        private List<Snap> _snaps;
 
         /// <summary>
         /// 
@@ -86,25 +129,45 @@ namespace FapChat.Core.Snapchat.Models
         /// 
         /// </summary>
         [JsonPropertyAttribute("device_token")]
-        public String DeviceToken { get; set; }
+        public String DeviceToken
+        {
+            get { return _deviceToken; }
+            set { SetField(ref _deviceToken, value, "DeviceToken"); }
+        }
+        private String _deviceToken;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("snap_p")]
-        public Int32 SnapP { get; set; }
+        public PrivacyType SnapPrivacy
+        {
+            get { return _snapPrivacy; }
+            set { SetField(ref _snapPrivacy, value, "SnapPrivacy"); }
+        }
+        private PrivacyType _snapPrivacy;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("mobile_verification_key")]
-        public String MobileVerificationKey { get; set; }
+        public String MobileVerificationKey
+        {
+            get { return _mobileVerificationKey; }
+            set { SetField(ref _mobileVerificationKey, value, "MobileVerificationKey"); }
+        }
+        private String _mobileVerificationKey;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("recents")]
-        public String[] Recents { get; set; }
+        public String[] Recents
+        {
+            get { return _recents; }
+            set { SetField(ref _recents, value, "Recents"); }
+        }
+        private String[] _recents;
 
         /// <summary>
         /// 
@@ -121,72 +184,99 @@ namespace FapChat.Core.Snapchat.Models
         /// 
         /// </summary>
         [JsonPropertyAttribute("notification_sound_setting")]
-        public String NotificationSoundsSettings { get; set; }
+        public String NotificationSoundsSettings
+        {
+            get { return _notificationSoundsSettings; }
+            set { SetField(ref _notificationSoundsSettings, value, "NotificationSoundsSettings"); }
+        }
+        private String _notificationSoundsSettings;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("snapchat_phone_number")]
-        public String SnapchatPhoneNumber { get; set; }
+        public String SnapchatPhoneNumber
+        {
+            get { return _snapchatPhoneNumber; }
+            set { SetField(ref _snapchatPhoneNumber, value, "SnapchatPhoneNumber"); }
+        }
+        private String _snapchatPhoneNumber;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("auth_token")]
-        public String AuthToken { get; set; }
+        public String AuthToken
+        {
+            get { return _authToken; }
+            set { SetField(ref _authToken, value, "AuthToken"); }
+        }
+        private String _authToken;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("image_caption")]
-        public Boolean ImageCaption { get; set; }
+        public Boolean ImageCaption
+        {
+            get { return _imageCaption; }
+            set { SetField(ref _imageCaption, value, "ImageCaption"); }
+        }
+        private Boolean _imageCaption;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("country_code")]
-        public String CountryCode { get; set; }
+        public String CountryCode
+        {
+            get { return _countryCode; }
+            set { SetField(ref _countryCode, value, "CountryCode"); }
+        }
+        private String _countryCode;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("can_view_mature_content")]
-        public Boolean CanViewMatureContent { get; set; }
+        public Boolean CanViewMatureContent
+        {
+            get { return _canViewMatureContent; }
+            set { SetField(ref _canViewMatureContent, value, "CanViewMatureContent"); }
+        }
+        private Boolean _canViewMatureContent;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("email")]
-        public String Email { get; set; }
+        public String Email
+        {
+            get { return _email; }
+            set { SetField(ref _email, value, "Email"); }
+        }
+        private String _email;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("should_send_text_to_verify_number")]
-        public Boolean ShouldSendTextToVerifyNumber { get; set; }
+        public Boolean ShouldSendTextToVerifyNumber
+        {
+            get { return _shouldSendTextToVerifyNumber; }
+            set { SetField(ref _shouldSendTextToVerifyNumber, value, "ShouldSendTextToVerifyNumber"); }
+        }
+        private Boolean _shouldSendTextToVerifyNumber;
 
         /// <summary>
         /// 
         /// </summary>
         [JsonPropertyAttribute("mobile")]
-        public String Mobile { get; set; }
-
-        #region Boilerplate
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
+        public String Mobile
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            get { return _mobile; }
+            set { SetField(ref _mobile, value, "Mobile"); }
         }
-        protected bool SetField<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-        #endregion
+        private String _mobile;
     }
 }

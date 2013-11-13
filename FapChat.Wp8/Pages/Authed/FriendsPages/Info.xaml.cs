@@ -29,8 +29,8 @@ namespace FapChat.Wp8.Pages.Authed.FriendsPages
             if (friend == null || App.IsolatedStorage.FriendsBests == null) { NavigationService.GoBack(); return; }
             _friend = friend;
 
-            LabelUserName.DataContext = App.IsolatedStorage.UserAccount.Friends.First(f => f.Name == friendName).Name;
-            LabelDisplayName.DataContext = App.IsolatedStorage.UserAccount.Friends.First(f => f.Name == friendName).Display;
+            LabelUserName.DataContext = App.IsolatedStorage.UserAccount.Friends.First(f => f.Name == friendName);
+            LabelDisplayName.DataContext = App.IsolatedStorage.UserAccount.Friends.First(f => f.Name == friendName);
 
             Best usersBests;
             App.IsolatedStorage.FriendsBests.TryGetValue(friend.Name, out usersBests);
@@ -55,9 +55,43 @@ namespace FapChat.Wp8.Pages.Authed.FriendsPages
             base.OnBackKeyPress(e);
         }
 
-        private void ButtonDelete_Click(object sender, EventArgs e)
+        private async void ButtonDelete_Click(object sender, EventArgs e)
         {
+            StartPendingState(string.Format("Deleting {0} from your snapchat...", _friend.Name));
 
+            var username = App.IsolatedStorage.UserAccount.UserName;
+            var authToken = App.IsolatedStorage.UserAccount.AuthToken;
+
+            var response = await Core.Snapchat.Functions.Friend(_friend.Name, "delete", username, authToken);
+            if (response == null)
+            {
+                // TODO: tell user shit failed
+            }
+            else if (!response.Logged)
+            {
+                // Logged Out
+                // TODO: Sign Out
+            }
+            else
+            {
+                // le worked
+                try
+                {
+                    App.IsolatedStorage.UserAccount.Friends.Remove(
+                        App.IsolatedStorage.UserAccount.Friends.Find(f => f.Name == _friend.Name));
+
+                    MessageBox.Show(string.Format("The user {0} has been deleted from your friends list. :(", _friend.Name), string.Format("{0} Deleted", _friend.Name),
+                        MessageBoxButton.OK);
+
+                    NavigationService.GoBack();
+                }
+                catch (Exception ex)
+                {
+                    // TODO: tell user something bad happened
+                }
+            }
+
+            EndPendingStage();
         }
 
         private void ButtonBlock_Click(object sender, EventArgs e)
@@ -120,10 +154,8 @@ namespace FapChat.Wp8.Pages.Authed.FriendsPages
                                     // TODO: tell user something bad happened
                                 }
                             }
-                            else
-                            {
-                                // TODO: tell user shit failed
-                            }
+                            
+                            // TODO: tell user shit failed
                         });
                         break;
                     case CustomMessageBoxResult.LeftButton:

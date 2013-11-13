@@ -99,6 +99,7 @@
     <Compile Include="Converters\DisplayNameToFriendly.cs" />
     <Compile Include="Converters\VipBoolToFriendlyConverter.cs" />
     <Compile Include="Helpers\Navigation.cs" />
+    <Compile Include="Interfaces\IPhonePageExtender.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Pages\Authed\Capture.xaml.cs">
       <DependentUpon>Capture.xaml</DependentUpon>
@@ -108,6 +109,9 @@
     </Compile>
     <Compile Include="Pages\Authed\FriendsPages\Info.xaml.cs">
       <DependentUpon>Info.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\Authed\Messages.xaml.cs">
+      <DependentUpon>Messages.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\Authed\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -136,6 +140,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\Authed\FriendsPages\Info.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\Authed\Messages.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -195,9 +203,16 @@
     <Content Include="Assets\AppBar\transport.play.png" />
     <Content Include="Assets\AppBar\transport.rew.png" />
     <Content Include="Assets\AppBar\upload.png" />
+    <Content Include="Assets\AppBar\user.add.png" />
     <Content Include="Assets\ApplicationIcon.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="Assets\SnappySnaps\friend.add.png" />
+    <Content Include="Assets\SnappySnaps\ghost_snapchat.png" />
+    <Content Include="Assets\SnappySnaps\received.new.png" />
+    <Content Include="Assets\SnappySnaps\received.image.png" />
+    <Content Include="Assets\SnappySnaps\received.video.png" />
+    <Content Include="Assets\SnappySnaps\viewed.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

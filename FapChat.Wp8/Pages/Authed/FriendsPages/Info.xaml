@@ -42,7 +42,7 @@
         <!--TitlePanel contains the name of the application and page title-->
         <StackPanel Grid.Row="0" Margin="12,17,0,28">
             <TextBlock Text="FAPCHAT" Style="{StaticResource PhoneTextNormalStyle}"/>
-            <TextBlock x:Name="LabelUserName" Text="{Binding}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
+            <TextBlock x:Name="LabelUserName" Text="{Binding Name}" Margin="9,-7,0,0" Style="{StaticResource PhoneTextTitle1Style}"/>
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
@@ -59,7 +59,7 @@
                     <Grid Style="{StaticResource GridMenuSpacer}"></Grid>
 
                     <TextBlock Text="display name" Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0"/>
-                    <TextBlock x:Name="LabelDisplayName" Text="{Binding Mode=OneWay, Converter={StaticResource IValueDisplayNameToFriendly}}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
+                    <TextBlock x:Name="LabelDisplayName" Text="{Binding Path=Display, Mode=OneWay, Converter={StaticResource IValueDisplayNameToFriendly}}" FontSize="21.333" FontFamily="Segoe WP SemiLight" Margin="0,0,10,0">
                         <TextBlock.Foreground>
                             <SolidColorBrush Color="{StaticResource FapAccent}"/>
                         </TextBlock.Foreground>

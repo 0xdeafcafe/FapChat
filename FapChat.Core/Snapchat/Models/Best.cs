@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using Newtonsoft.Json;
 
 namespace FapChat.Core.Snapchat.Models
@@ -8,7 +6,7 @@ namespace FapChat.Core.Snapchat.Models
     /// <summary>
     /// 
     /// </summary>
-    public class Best : Base, INotifyPropertyChanged
+    public class Best : Base
     {
         /// <summary>
         /// A list of this person's best friends
@@ -31,23 +29,5 @@ namespace FapChat.Core.Snapchat.Models
             set { SetField(ref _score, value, "Score"); }
         }
         private Int32 _score;
-
-        #region Boilerplate
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected virtual void OnPropertyChanged(string propertyName)
-        {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
-        }
-        protected bool SetField<T>(ref T field, T value, string propertyName)
-        {
-            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
-            field = value;
-            OnPropertyChanged(propertyName);
-            return true;
-        }
-
-        #endregion
     }
 }

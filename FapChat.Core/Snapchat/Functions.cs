@@ -158,6 +158,7 @@ namespace FapChat.Core.Snapchat
         /// <param name="username"></param>
         /// <param name="authToken"></param>
         /// <param name="friend"></param>
+        /// <param name="postDataEntries"></param>
         public static async Task<FriendAction> Friend(string friend, string action, string username, string authToken, Dictionary<string, string> postDataEntries = null)
         {
             var timestamp = Timestamps.GenerateRetardedTimestamp();

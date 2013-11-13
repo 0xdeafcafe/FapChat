@@ -5,6 +5,9 @@ using Newtonsoft.Json;
 
 namespace FapChat.Core.Snapchat.Models
 {
+    /// <summary>
+    /// The base response params snapchat return
+    /// </summary>
     public class Base : INotifyPropertyChanged
     {
         /// <summary>
@@ -40,13 +43,13 @@ namespace FapChat.Core.Snapchat.Models
         }
         private String _param;
 
-        #region Boilerplate
+        #region Binding Stuff
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null) handler(this, new PropertyChangedEventArgs(propertyName));
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
         protected bool SetField<T>(ref T field, T value, string propertyName)
         {
