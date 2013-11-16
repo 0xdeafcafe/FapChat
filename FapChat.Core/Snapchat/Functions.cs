@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net;
 using System.Threading.Tasks;
 using FapChat.Core.Snapchat.Helpers;
@@ -25,9 +26,9 @@ namespace FapChat.Core.Snapchat
 		    {
 		        { "password", password },
 		        { "username", username },
-                { "timestamp", timestamp }
+                { "timestamp", timestamp.ToString(CultureInfo.InvariantCulture) }
 		    };
-            var response = await WebRequests.Post("login", postData, KeyVault.StaticToken, timestamp);
+            var response = await WebRequests.Post("login", postData, KeyVault.StaticToken, timestamp.ToString(CultureInfo.InvariantCulture));
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -67,9 +68,9 @@ namespace FapChat.Core.Snapchat
             var postData = new Dictionary<string, string>
 		    {
 		        { "username", username },
-                { "timestamp", timestamp }
+                { "timestamp", timestamp.ToString(CultureInfo.InvariantCulture) }
 		    };
-            var response = await WebRequests.Post("updates", postData, authToken, timestamp);
+            var response = await WebRequests.Post("updates", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -99,9 +100,9 @@ namespace FapChat.Core.Snapchat
 		    {
                 { "json", "{}" },
 		        { "username", username },
-                { "timestamp", timestamp }
+                { "timestamp", timestamp.ToString(CultureInfo.InvariantCulture) }
 		    };
-            var response = await WebRequests.Post("logout", postData, authToken, timestamp);
+            var response = await WebRequests.Post("logout", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -132,9 +133,9 @@ namespace FapChat.Core.Snapchat
 		    {
                 { "friend_usernames", JsonConvert.SerializeObject(friendsList) },
 		        { "username", username },
-                { "timestamp", timestamp }
+                { "timestamp", timestamp.ToString(CultureInfo.InvariantCulture) }
 		    };
-            var response = await WebRequests.Post("bests", postData, authToken, timestamp);
+            var response = await WebRequests.Post("bests", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:
@@ -167,14 +168,14 @@ namespace FapChat.Core.Snapchat
                 { "friend", friend },
                 { "action", action },
 		        { "username", username },
-                { "timestamp", timestamp }
+                { "timestamp", timestamp.ToString(CultureInfo.InvariantCulture) }
 		    };
 
             if (postDataEntries != null)
                 foreach(var postDataEntry in postDataEntries)
                     postData.Add(postDataEntry.Key, postDataEntry.Value);
 
-            var response = await WebRequests.Post("friend", postData, authToken, timestamp);
+            var response = await WebRequests.Post("friend", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
             switch (response.StatusCode)
             {
                 case HttpStatusCode.OK:

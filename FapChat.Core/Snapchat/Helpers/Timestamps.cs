@@ -17,10 +17,9 @@ namespace FapChat.Core.Snapchat.Helpers
         /// Generates this fucking retarded timestamp that snapchat use...
         /// </summary>
         /// <returns>The timestamp as a string</returns>
-        public static string GenerateRetardedTimestamp()
+        public static Int64 GenerateRetardedTimestamp()
         {
-            var now = Math.Round((DateTime.UtcNow - UnixEpoch).TotalSeconds * 1000).ToString(CultureInfo.InvariantCulture);
-            return now;
+            return Convert.ToInt64(Math.Round((DateTime.UtcNow - UnixEpoch).TotalSeconds * 1000));
         }
 
         /// <summary>
@@ -28,11 +27,14 @@ namespace FapChat.Core.Snapchat.Helpers
         /// </summary>
         /// <param name="retardedTimeStamp">The snapchat timestamp.</param>
         /// <returns>A nice, non retarded DateTime object.</returns>
-        public static DateTime ConvertToDateTime(int retardedTimeStamp)
+        public static DateTime ConvertToDateTime(Int64 retardedTimeStamp)
         {
-            var cleanup = retardedTimeStamp / 1000;
-            return UnixEpoch.AddSeconds(cleanup);
+            var unixShit = retardedTimeStamp.ToString(CultureInfo.InvariantCulture);
+
+            if (unixShit.Length > 10)
+                unixShit = unixShit.Remove(10);
+
+            return UnixEpoch.AddSeconds(Int64.Parse(unixShit));
         }
     }
 }
-
