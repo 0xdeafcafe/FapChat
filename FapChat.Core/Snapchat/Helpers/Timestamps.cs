@@ -22,6 +22,17 @@ namespace FapChat.Core.Snapchat.Helpers
             var now = Math.Round((DateTime.UtcNow - UnixEpoch).TotalSeconds * 1000).ToString(CultureInfo.InvariantCulture);
             return now;
         }
+
+        /// <summary>
+        /// Convert a SnapChat timestamp into a DateTime object.
+        /// </summary>
+        /// <param name="retardedTimeStamp">The snapchat timestamp.</param>
+        /// <returns>A nice, non retarded DateTime object.</returns>
+        public static DateTime ConvertToDateTime(int retardedTimeStamp)
+        {
+            var cleanup = retardedTimeStamp / 1000;
+            return UnixEpoch.AddSeconds(cleanup);
+        }
     }
 }
 

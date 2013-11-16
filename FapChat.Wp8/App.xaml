@@ -46,8 +46,10 @@
         							</VisualState>
         						</VisualStateGroup>
         					</VisualStateManager.VisualStateGroups>
-        					<Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" 
-									CornerRadius="45" 
+        					<Border x:Name="ButtonBackground" BorderBrush="{TemplateBinding BorderBrush}" 
+                                    BorderThickness="{TemplateBinding BorderThickness}" 
+									CornerRadius="45"
+                                    Padding="{TemplateBinding Padding}"
 									Margin="{StaticResource PhoneTouchTargetOverhang}" toolkit:TiltEffect.IsTiltEnabled="True">
         						<Border x:Name="Content" Background="{TemplateBinding Background}">
 								</Border>
@@ -118,7 +120,12 @@
         							<VisualState x:Name="Disabled" />
         						</VisualStateGroup>
         					</VisualStateManager.VisualStateGroups>
-        					<ContentControl x:Name="ContentContainer" HorizontalAlignment="Left" ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" Foreground="{TemplateBinding Foreground}" HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" Padding="{TemplateBinding Padding}" VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
+        					<ContentControl x:Name="ContentContainer" HorizontalAlignment="Left" 
+                                            ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" 
+                                            Foreground="{TemplateBinding Foreground}" 
+                                            HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                            Padding="{TemplateBinding Padding}" 
+                                            VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
         				</Grid>
         			</ControlTemplate>
         		</Setter.Value>

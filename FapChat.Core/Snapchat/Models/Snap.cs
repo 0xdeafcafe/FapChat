@@ -70,7 +70,7 @@ namespace FapChat.Core.Snapchat.Models
         private String _screenName;
 
 		/// <summary>
-		/// The timestamp that the Snap was sent.
+		/// The timestamp that the Snap was sent? Seems to be two of these
         /// </summary>
         [JsonPropertyAttribute("ts")]
         public Int64 Timestamp

@@ -16,6 +16,10 @@
     shell:SystemTray.IsVisible="True"
     shell:SystemTray.BackgroundColor="#e9c109"
     shell:SystemTray.ForegroundColor="#000000">
+    <phone:PhoneApplicationPage.Resources>
+        <converters:GetActiveUserFromSnap x:Key="IValueActiveUserFromSnap" />
+        <converters:GetFriendlySnapStatus x:Key="IValueFriendlySnapStatus" />
+    </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar BackgroundColor="{StaticResource FapAccent}" Mode="Default">
             <shell:ApplicationBarIconButton x:Name="ButtonRefresh" IconUri="/Assets/AppBar/refresh.png" IsEnabled="True" Text="Refresh" />
@@ -28,7 +32,7 @@
             <RowDefinition Height="60"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <Rectangle VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="150">
+        <Rectangle VerticalAlignment="Top" HorizontalAlignment="Stretch" Height="60">
             <Rectangle.Fill>
                 <SolidColorBrush Color="{StaticResource FapAccent}"/>
             </Rectangle.Fill>
@@ -40,10 +44,38 @@
         </StackPanel>
 
         <!--ContentPanel - place additional content here-->
-        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="25,0,12,0">
-            <ItemsControl x:Name="ItemsSnaps">
-                
-            </ItemsControl>
+        <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
+            <ScrollViewer>
+                <ItemsControl x:Name="ItemsSnaps" ItemsSource="{Binding}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Tag="{Binding}" d:DesignWidth="350" Height="80">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="80" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                
+                                <Image Grid.Column="0" Source="/Assets/SnappySnaps/received.image.png" Margin="10" Stretch="UniformToFill" />
+                                
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Foreground="#FF616161" Text="{Binding FallbackValue=alexerax, Converter={StaticResource IValueActiveUserFromSnap}}" FontSize="18.667"></TextBlock>
+                                        
+                                        <Grid Margin="5,0,5,0" />
+                                        
+                                        <TextBlock Foreground="#FF616161" FontSize="18.667">12/10/21 - 12:04</TextBlock>
+                                    </StackPanel>
+                                    <TextBlock FontSize="13.333" Text="{Binding FallbackValue=Pending..., Converter={StaticResource IValueFriendlySnapStatus}}">
+                                        <TextBlock.Foreground>
+                                            <SolidColorBrush Color="{StaticResource FapAccent}"/>
+                                        </TextBlock.Foreground>
+                                    </TextBlock>
+                                </StackPanel>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </Grid>
         
         <Rectangle Grid.RowSpan="2" x:Name="PendingOverlay" HorizontalAlignment="Stretch" Fill="#e9c109" Opacity="0.425" Visibility="Collapsed"/>

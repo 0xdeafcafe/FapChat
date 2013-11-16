@@ -96,7 +96,11 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\CaptureScreenMessagesIconType.cs" />
     <Compile Include="Converters\DisplayNameToFriendly.cs" />
+    <Compile Include="Converters\GetActiveUserFromSnap.cs" />
+    <Compile Include="Converters\GetFriendlySnapStatus.cs" />
+    <Compile Include="Converters\GetFriendlyTimeFromSnapChatTimestamp.cs" />
     <Compile Include="Converters\VipBoolToFriendlyConverter.cs" />
     <Compile Include="Helpers\Navigation.cs" />
     <Compile Include="Interfaces\IPhonePageExtender.cs" />
@@ -209,8 +213,9 @@
     </Content>
     <Content Include="Assets\SnappySnaps\friend.add.png" />
     <Content Include="Assets\SnappySnaps\ghost_snapchat.png" />
-    <Content Include="Assets\SnappySnaps\received.new.png" />
+    <Content Include="Assets\SnappySnaps\received.clear.png" />
     <Content Include="Assets\SnappySnaps\received.image.png" />
+    <Content Include="Assets\SnappySnaps\received.new.png" />
     <Content Include="Assets\SnappySnaps\received.video.png" />
     <Content Include="Assets\SnappySnaps\viewed.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
