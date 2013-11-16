@@ -8,10 +8,10 @@ namespace FapChat.Wp8.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var timeStamp = int.Parse(value.ToString());
+            var timeStamp = Int64.Parse(value.ToString());
             var dateTime = Core.Snapchat.Helpers.Timestamps.ConvertToDateTime(timeStamp);
 
-            return null;
+            return dateTime.ToString("dd/M/yy - HH:mm");
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
@@ -19,5 +19,4 @@ namespace FapChat.Wp8.Converters
             return value;
         }
     }
-
 }

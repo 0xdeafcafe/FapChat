@@ -19,6 +19,7 @@
     <phone:PhoneApplicationPage.Resources>
         <converters:GetActiveUserFromSnap x:Key="IValueActiveUserFromSnap" />
         <converters:GetFriendlySnapStatus x:Key="IValueFriendlySnapStatus" />
+        <converters:GetFriendlyTimeFromSnapChatTimestamp x:Key="IValueFriendlyTimeFromSnapChatTimestamp" />
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar BackgroundColor="{StaticResource FapAccent}" Mode="Default">
@@ -62,8 +63,8 @@
                                         <TextBlock Foreground="#FF616161" Text="{Binding FallbackValue=alexerax, Converter={StaticResource IValueActiveUserFromSnap}}" FontSize="18.667"></TextBlock>
                                         
                                         <Grid Margin="5,0,5,0" />
-                                        
-                                        <TextBlock Foreground="#FF616161" FontSize="18.667">12/10/21 - 12:04</TextBlock>
+
+                                        <TextBlock Foreground="#FF616161" FontSize="18.667" Text="{Binding Path=Timestamp, FallbackValue=18/08/94 - 14:34, Converter={StaticResource IValueFriendlyTimeFromSnapChatTimestamp}}" />
                                     </StackPanel>
                                     <TextBlock FontSize="13.333" Text="{Binding FallbackValue=Pending..., Converter={StaticResource IValueFriendlySnapStatus}}">
                                         <TextBlock.Foreground>
