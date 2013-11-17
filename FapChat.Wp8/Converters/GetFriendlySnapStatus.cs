@@ -10,13 +10,13 @@ namespace FapChat.Wp8.Converters
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var snap = value as Snap;
-            if (snap == null)
+            if (snap == null || snap.Status == SnapStatus.Downloading)
                 return "";
 
             switch (snap.Status)
             {
                 case SnapStatus.Delivered:
-                    return "Delivered...";
+                    return snap.RecipientName == null ? "Tap to Load..." : "Delivered...";
 
                 case SnapStatus.None:
                     return "None...";
@@ -29,6 +29,9 @@ namespace FapChat.Wp8.Converters
 
                 case SnapStatus.Sent:
                     return "Sent...";
+
+                case SnapStatus.Downloading:
+                    return "Downloading...";
 
                 default:
                     return "Unknown...";

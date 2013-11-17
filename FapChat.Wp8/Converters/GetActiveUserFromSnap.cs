@@ -13,7 +13,7 @@ namespace FapChat.Wp8.Converters
             if (snap == null)
                 return null;
 
-            return snap.ScreenName ?? snap.Recipient;
+            return snap.ScreenName ?? snap.RecipientName;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

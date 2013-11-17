@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using FapChat.Core.Snapchat.Helpers;
 using Newtonsoft.Json;
 
 namespace FapChat.Core.Snapchat.Models
@@ -14,7 +15,10 @@ namespace FapChat.Core.Snapchat.Models
         Sent = 0x00,
         Delivered = 0x01,
         Opened = 0x02,
-        Screenshotted = 0x03
+        Screenshotted = 0x03,
+
+        // My Swagga Shit
+        Downloading = 0xDEAD
     }
 
     /// <summary>
@@ -51,12 +55,12 @@ namespace FapChat.Core.Snapchat.Models
 		/// The recipient of the Snap.
         /// </summary>
         [JsonPropertyAttribute("rp")]
-        public String Recipient
+        public String RecipientName
         {
-            get { return _recipient; }
-            set { SetField(ref _recipient, value, "Recipient"); }
+            get { return _recipientName; }
+            set { SetField(ref _recipientName, value, "RecipientName"); }
         }
-        private String _recipient;
+        private String _recipientName;
 
         /// <summary>
         /// The username of the sender of the Snap.
@@ -123,6 +127,14 @@ namespace FapChat.Core.Snapchat.Models
             set { SetField(ref _mediaType, value, "MediaType"); }
 	    }
 	    private MediaType _mediaType;
+
+        /// <summary>
+        /// Specifies if the Media has been cached locally
+        /// </summary>
+	    public Boolean HasMedia
+	    {
+	        get { return Blob.CheckMediaIsCached(Id); }
+	    }
 
         #region Boilerplate
 

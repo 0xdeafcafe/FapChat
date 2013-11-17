@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Globalization;
 using System.Windows.Data;
-using FapChat.Wp8.Helpers;
+using FapChat.Core.Snapchat.Models;
 
 namespace FapChat.Wp8.Converters
 {
-    public class GetFriendlyTimeFromSnapChatTimestamp : IValueConverter
+    public class CheckIfSnapWasRecieved : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            var timeStamp = Int64.Parse(value.ToString());
-            var dateTime = Core.Snapchat.Helpers.Timestamps.ConvertToDateTime(timeStamp);
-
-            return Time.GetReleativeDate(dateTime) ?? dateTime.ToString("dd/M/yy - HH:mm");
+            var snap = value as Snap;
+            return snap == null ? null : (snap.RecipientName == null).ToString();
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

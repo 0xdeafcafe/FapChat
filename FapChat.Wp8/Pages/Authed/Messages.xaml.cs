@@ -2,6 +2,7 @@
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Navigation;
 using FapChat.Core.Snapchat.Models;
 using FapChat.Wp8.Helpers;
@@ -15,6 +16,31 @@ namespace FapChat.Wp8.Pages.Authed
         public Messages()
         {
             InitializeComponent();
+
+            UpdateBindings();
+        }
+
+        private void ButtonSnap_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button == null)
+                return;
+
+            var snap = button.Tag as Snap;
+            if (snap == null)
+                return;
+
+            if (snap.Status == SnapStatus.Downloading)
+                return;
+
+            if (snap.HasMedia)
+            {
+
+            }
+            else
+            {
+                snap.Status = SnapStatus.Downloading;
+            }
 
             UpdateBindings();
         }

@@ -85,9 +85,12 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Crypto\Aes.cs" />
     <Compile Include="Crypto\Sha.cs" />
+    <Compile Include="Helpers\DataHelpers.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Snapchat\Functions.cs" />
+    <Compile Include="Snapchat\Helpers\Blob.cs" />
     <Compile Include="Snapchat\Helpers\Timestamps.cs" />
     <Compile Include="Snapchat\Helpers\Tokens.cs" />
     <Compile Include="Snapchat\Helpers\WebRequests.cs" />
@@ -95,6 +98,7 @@
     <Compile Include="Snapchat\Models\Account.cs" />
     <Compile Include="Snapchat\Models\Base.cs" />
     <Compile Include="Snapchat\Models\Best.cs" />
+    <Compile Include="Snapchat\Models\CachedMediaBlob.cs" />
     <Compile Include="Snapchat\Models\Friend.cs" />
     <Compile Include="Snapchat\Storage.cs" />
     <Compile Include="Snapchat\TempEnumHolder.cs" />

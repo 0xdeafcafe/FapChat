@@ -191,5 +191,45 @@ namespace FapChat.Core.Snapchat
                     return null;
             }
         }
+
+        public static async Task<byte[]> GetBlob(string snapId, string username, string authToken)
+        {
+            var timestamp = Timestamps.GenerateRetardedTimestamp();
+            var postData = new Dictionary<string, string>
+		    {
+                { "id", snapId },
+		        { "username", username },
+                { "timestamp", timestamp.ToString(CultureInfo.InvariantCulture) }
+		    };
+
+            var response = await WebRequests.Post("blob", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    {
+                        var data = await response.Content.ReadAsByteArrayAsync();
+
+                        // Validate Blob Shit
+                        byte[] decryptedBlob = null;
+
+                        if (Blob.ValidateMediaBlob(data))
+                            decryptedBlob = data;
+                        else
+                        {
+                            data = Blob.DecryptBlob(data);
+                            if (Blob.ValidateMediaBlob(data))
+                                decryptedBlob = data;
+                        }
+
+                        //if ()
+
+
+                        return null;
+                    }
+                default:
+                    // Well, fuck
+                    return null;
+            }
+        }
     }
 }

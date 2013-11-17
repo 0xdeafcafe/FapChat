@@ -97,12 +97,16 @@
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\CaptureScreenMessagesIconType.cs" />
+    <Compile Include="Converters\CheckIfSnapIsDownloading.cs" />
+    <Compile Include="Converters\CheckIfSnapWasRecieved.cs" />
     <Compile Include="Converters\DisplayNameToFriendly.cs" />
     <Compile Include="Converters\GetActiveUserFromSnap.cs" />
     <Compile Include="Converters\GetFriendlySnapStatus.cs" />
     <Compile Include="Converters\GetFriendlyTimeFromSnapChatTimestamp.cs" />
+    <Compile Include="Converters\IconFromSnapMediaType.cs" />
     <Compile Include="Converters\VipBoolToFriendlyConverter.cs" />
     <Compile Include="Helpers\Navigation.cs" />
+    <Compile Include="Helpers\Time.cs" />
     <Compile Include="Interfaces\IPhonePageExtender.cs" />
     <Compile Include="LocalizedStrings.cs" />
     <Compile Include="Pages\Authed\Capture.xaml.cs">
@@ -217,6 +221,15 @@
     <Content Include="Assets\SnappySnaps\received.image.png" />
     <Content Include="Assets\SnappySnaps\received.new.png" />
     <Content Include="Assets\SnappySnaps\received.video.png" />
+    <Content Include="Assets\SnappySnaps\received.friend.image.png" />
+    <Content Include="Assets\SnappySnaps\received.friend.new.png" />
+    <Content Include="Assets\SnappySnaps\received.friend.video.png" />
+    <Content Include="Assets\SnappySnaps\received.viewed.image.png" />
+    <Content Include="Assets\SnappySnaps\received.viewed.video.png" />
+    <Content Include="Assets\SnappySnaps\sent.clear.png" />
+    <Content Include="Assets\SnappySnaps\sent.image.png" />
+    <Content Include="Assets\SnappySnaps\sent.new.png" />
+    <Content Include="Assets\SnappySnaps\sent.video.png" />
     <Content Include="Assets\SnappySnaps\viewed.png" />
     <Content Include="Assets\Tiles\FlipCycleTileLarge.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

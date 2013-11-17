@@ -120,9 +120,10 @@
         							<VisualState x:Name="Disabled" />
         						</VisualStateGroup>
         					</VisualStateManager.VisualStateGroups>
-        					<ContentControl x:Name="ContentContainer" HorizontalAlignment="Left" 
+        					<ContentControl x:Name="ContentContainer" HorizontalAlignment="Left"
                                             ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" 
                                             Foreground="{TemplateBinding Foreground}" 
+                                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
                                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                             Padding="{TemplateBinding Padding}" 
                                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>

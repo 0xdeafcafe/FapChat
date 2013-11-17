@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
     xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:converters="clr-namespace:FapChat.Wp8.Converters"
@@ -20,6 +21,9 @@
         <converters:GetActiveUserFromSnap x:Key="IValueActiveUserFromSnap" />
         <converters:GetFriendlySnapStatus x:Key="IValueFriendlySnapStatus" />
         <converters:GetFriendlyTimeFromSnapChatTimestamp x:Key="IValueFriendlyTimeFromSnapChatTimestamp" />
+        <converters:IconFromSnapMediaType x:Key="IValueIconFromSnapMediaType" />
+        <converters:CheckIfSnapWasRecieved x:Key="IValueCheckIfSnapWasRecieved" />
+        <converters:CheckIfSnapIsDownloading x:Key="IValueCheckIfSnapIsDownloading" />
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar BackgroundColor="{StaticResource FapAccent}" Mode="Default">
@@ -47,32 +51,37 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <ScrollViewer>
-                <ItemsControl x:Name="ItemsSnaps" ItemsSource="{Binding}">
+                <ItemsControl x:Name="ItemsSnaps" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Grid Tag="{Binding}" d:DesignWidth="350" Height="80">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                
-                                <Image Grid.Column="0" Source="/Assets/SnappySnaps/received.image.png" Margin="10" Stretch="UniformToFill" />
-                                
-                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Foreground="#FF616161" Text="{Binding FallbackValue=alexerax, Converter={StaticResource IValueActiveUserFromSnap}}" FontSize="18.667"></TextBlock>
-                                        
-                                        <Grid Margin="5,0,5,0" />
+                            <Button x:Name="ButtonSnap" Style="{StaticResource EmptyItemSourceAction}" Tag="{Binding}" 
+                                    toolkit:TiltEffect.IsTiltEnabled="{Binding Converter={StaticResource IValueCheckIfSnapWasRecieved}}"
+                                    Click="ButtonSnap_Click">
+                                <Grid Tag="{Binding}" Height="80">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                                        <TextBlock Foreground="#FF616161" FontSize="18.667" Text="{Binding Path=Timestamp, FallbackValue=18/08/94 - 14:34, Converter={StaticResource IValueFriendlyTimeFromSnapChatTimestamp}}" />
+                                    <Image Grid.Column="0" Source="{Binding Converter={StaticResource IValueIconFromSnapMediaType}}" Margin="10" Stretch="UniformToFill" />
+
+                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                        <StackPanel Orientation="Horizontal">
+                                            <TextBlock Foreground="#FF616161" Text="{Binding FallbackValue=alexerax, Converter={StaticResource IValueActiveUserFromSnap}}" FontSize="18.667"></TextBlock>
+
+                                            <TextBlock Foreground="#FF616161" FontSize="18.667" Text="-" Margin="5,0,5,0" />
+
+                                            <TextBlock Foreground="#FF616161" FontSize="18.667" TextTrimming="WordEllipsis" Text="{Binding Path=Timestamp, FallbackValue=18/08/94 - 14:34, Converter={StaticResource IValueFriendlyTimeFromSnapChatTimestamp}}" />
+                                        </StackPanel>
+                                        <TextBlock FontSize="13.333" Text="{Binding FallbackValue=Pending..., Converter={StaticResource IValueFriendlySnapStatus}}">
+                                            <TextBlock.Foreground>
+                                                <SolidColorBrush Color="{StaticResource FapAccent}"/>
+                                            </TextBlock.Foreground>
+                                        </TextBlock>
+                                        <ProgressBar Width="150" Visibility="{Binding Converter={StaticResource IValueCheckIfSnapIsDownloading}}" HorizontalAlignment="Stretch" IsIndeterminate="True"></ProgressBar>
                                     </StackPanel>
-                                    <TextBlock FontSize="13.333" Text="{Binding FallbackValue=Pending..., Converter={StaticResource IValueFriendlySnapStatus}}">
-                                        <TextBlock.Foreground>
-                                            <SolidColorBrush Color="{StaticResource FapAccent}"/>
-                                        </TextBlock.Foreground>
-                                    </TextBlock>
-                                </StackPanel>
-                            </Grid>
+                                </Grid>
+                            </Button>
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
