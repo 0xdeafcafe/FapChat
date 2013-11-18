@@ -41,15 +41,15 @@ namespace FapChat.Core.Snapchat.Helpers
         /// <returns></returns>
         public static byte[] DecryptBlob(byte[] data)
         {
-            try
-            {
+            //try
+            //{
                 data = Aes.DecryptData(data, KeyVault.BlobEncryptionKey);
                 return ValidateMediaBlob(data) ? data : null;
-            }
-            catch
-            {
-                return null;
-            }
+            //}
+            //catch
+            //{
+            //    return null;
+            //}
         }
     }
 }

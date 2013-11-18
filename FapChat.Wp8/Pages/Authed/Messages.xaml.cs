@@ -20,7 +20,7 @@ namespace FapChat.Wp8.Pages.Authed
             UpdateBindings();
         }
 
-        private void ButtonSnap_Click(object sender, RoutedEventArgs e)
+        private async void ButtonSnap_Click(object sender, RoutedEventArgs e)
         {
             var button = sender as Button;
             if (button == null)
@@ -33,16 +33,32 @@ namespace FapChat.Wp8.Pages.Authed
             if (snap.Status == SnapStatus.Downloading)
                 return;
 
+            var username = App.IsolatedStorage.UserAccount.UserName;
+            var authToken = App.IsolatedStorage.UserAccount.AuthToken;
+
             if (snap.HasMedia)
             {
 
             }
-            else
+            else if (!snap.HasMedia && 
+                snap.RecipientName == null &&
+                snap.Status == SnapStatus.Delivered)
             {
                 snap.Status = SnapStatus.Downloading;
-            }
+                UpdateBindings();
 
-            UpdateBindings();
+                var blob = await Core.Snapchat.Functions.GetBlob(snap.Id, username, authToken);
+                var cachedBlob = new CachedMediaBlob
+                {
+                    BlobMediaType = snap.MediaType,
+                    Id = snap.Id,
+                    LocalFileBytes = blob
+                };
+                // TODO: Save this blob
+
+                snap.Status = SnapStatus.Delivered;
+                UpdateBindings();
+            }
         }
 
         private void UpdateBindings()

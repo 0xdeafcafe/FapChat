@@ -221,10 +221,8 @@ namespace FapChat.Core.Snapchat
                                 decryptedBlob = data;
                         }
 
-                        //if ()
+                        return decryptedBlob;
 
-
-                        return null;
                     }
                 default:
                     // Well, fuck

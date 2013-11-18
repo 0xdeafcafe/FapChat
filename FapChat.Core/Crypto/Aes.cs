@@ -2,6 +2,8 @@
 using System.Security.Cryptography;
 using System.Text;
 using FapChat.Core.Helpers;
+using Org.BouncyCastle.Crypto.Parameters;
+using Org.BouncyCastle.Security;
 
 namespace FapChat.Core.Crypto
 {
@@ -18,14 +20,29 @@ namespace FapChat.Core.Crypto
         /// <returns></returns>
         public static byte[] DecryptData(byte[] data, string key)
         {
-            using (var aesAlg = new AesManaged())
-            {
-                aesAlg.Key = new UTF8Encoding().GetBytes(key);
-                var decryptor = aesAlg.CreateDecryptor(aesAlg.Key, new byte[] { 0x00 });
-                using (var msDecrypt = new MemoryStream(data))
-                    using (var csDecrypt = new CryptoStream(msDecrypt, decryptor, CryptoStreamMode.Read))
-                        return DataHelpers.ReadFully(csDecrypt);
-            }
+            var encKey = Encoding.UTF8.GetBytes(key);
+
+            // AES algorthim with ECB cipher & PKCS5 padding...
+            var cipher = CipherUtilities.GetCipher("AES/ECB/PKCS5Padding");
+
+            // Initialise the cipher...
+            cipher.Init(false, new KeyParameter(encKey));
+
+            // Decrypt the data and write the 'final' byte stream...
+            var decryptionbytes = cipher.ProcessBytes(data);
+            var decryptedfinal = cipher.DoFinal();
+
+            // Write the decrypt bytes & final to memory...
+            var decryptedstream = new MemoryStream(decryptionbytes.Length);
+            decryptedstream.Write(decryptionbytes, 0, decryptionbytes.Length);
+            decryptedstream.Write(decryptedfinal, 0, decryptedfinal.Length);
+            decryptedstream.Flush();
+
+            var decryptedData = new byte[decryptedstream.Length];
+            decryptedstream.Position = 0;
+            decryptedstream.Read(decryptedData, 0, (int)decryptedstream.Length);
+
+            return decryptedData;
         }
 
         /// <summary>

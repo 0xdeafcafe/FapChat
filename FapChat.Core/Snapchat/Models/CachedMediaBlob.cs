@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
-using System.IO.IsolatedStorage;
-using FapChat.Core.Helpers;
+using FapChat.Core.Snapchat.Helpers;
+using Microsoft.Xna.Framework.Media;
 
 namespace FapChat.Core.Snapchat.Models
 {
@@ -20,7 +19,7 @@ namespace FapChat.Core.Snapchat.Models
         private String _id;
 
         /// <summary>
-        /// 
+        /// The Media Type of the Blob
         /// </summary>
         public MediaType BlobMediaType
         {
@@ -36,29 +35,14 @@ namespace FapChat.Core.Snapchat.Models
         {
             get
             {
-                var filePath = string.Format("{0}.{1}", Id, GeFriendlyTypeFromMediaType(_blobMediaType));
-
-                using (var isoStore = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    if (!isoStore.FileExists(filePath))
-                        return null;
-
-                    using (var fileStream = isoStore.OpenFile(filePath, FileMode.Open))
-                        return DataHelpers.ReadFully(fileStream);
-                }
+                var filePath = string.Format("{0}.{1}", Id, IsolatedStorage.GetFileNameTypeFromMediaType(_blobMediaType));
+                return IsolatedStorage.GetFile(filePath);
             }
             set
             {
-                var filePath = string.Format("{0}.{1}", Id, GeFriendlyTypeFromMediaType(_blobMediaType));
-
-                using (var isoStore = IsolatedStorageFile.GetUserStoreForApplication())
-                {
-                    if (isoStore.FileExists(filePath))
-                        isoStore.DeleteFile(filePath);
-
-                    using (var fileStream = isoStore.CreateFile(filePath))
-                        new MemoryStream(value).CopyToAsync(fileStream);
-                }
+                var filePath = string.Format("{0}.{1}", Id, IsolatedStorage.GetFileNameTypeFromMediaType(_blobMediaType));
+                IsolatedStorage.SaveFile(filePath, value);
+                new MediaLibrary().SavePicture(filePath, value);
             }
         }
 
@@ -76,27 +60,6 @@ namespace FapChat.Core.Snapchat.Models
             field = value;
             OnPropertyChanged(propertyName);
             return true;
-        }
-
-        #endregion
-
-        #region Helpers
-
-        private static string GeFriendlyTypeFromMediaType(MediaType mediaType)
-        {
-            switch (mediaType)
-            {
-                case MediaType.Image:
-                case MediaType.FriendRequestImage:
-                    return "image.jpg";
-
-                case MediaType.FriendRequestVideo:
-                case MediaType.Video:
-                    return "video.mp4";
-
-                default:
-                    return "";
-            }
         }
 
         #endregion
