@@ -15,7 +15,7 @@
     SupportedOrientations="Portrait"  Orientation="Portrait"
     shell:SystemTray.IsVisible="True"
     shell:SystemTray.BackgroundColor="#e9c109"
-    shell:SystemTray.ForegroundColor="#000000">
+    shell:SystemTray.ForegroundColor="#ffffff">
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar BackgroundColor="{StaticResource FapAccent}" Mode="Default">
             <shell:ApplicationBarIconButton x:Name="ButtonCapture" IconUri="/Assets/AppBar/feature.camera.png" IsEnabled="True" Text="Capture" Click="ButtonCapture_Click"/>

@@ -46,7 +46,7 @@ namespace FapChat.Wp8.Pages.Authed
         private void ButtonFriendDetails_Click(object sender, RoutedEventArgs e)
         {
             var button = ((Button) sender);
-            if (button == null)
+            if (button == null || button.Tag == null)
                 return;
 
             var tag = button.Tag;
@@ -223,7 +223,7 @@ namespace FapChat.Wp8.Pages.Authed
             HideProgress();
             if (update == null || bests == null)
             {
-                Navigation.NavigateTo(Navigation.NavigationTarget.Login);
+                Navigation.NavigateToAndRemoveBackStack(Navigation.NavigationTarget.Login);
                 MessageBox.Show("You are not authorized, please log back in.", "Unable to authenticate",
                     MessageBoxButton.OK);
             }

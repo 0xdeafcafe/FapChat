@@ -11,6 +11,7 @@ namespace FapChat.Wp8.Helpers
         /// </summary>
         public enum NavigationTarget
         {
+            Loading,
             Capture,
             Messages,
             Settings,
@@ -30,6 +31,10 @@ namespace FapChat.Wp8.Helpers
             string path;
             switch (target)
             {
+                case NavigationTarget.Loading:
+                    path = "/Pages/Authed/Loading.xaml";
+                    break;
+
                 case NavigationTarget.Capture:
                     path = "/Pages/Authed/Capture.xaml";
                     break;
@@ -106,6 +111,20 @@ namespace FapChat.Wp8.Helpers
         /// <param name="queryParams">Optional extra query string params.</param>
         public static void NavigateTo(NavigationTarget target, Dictionary<string, string> queryParams = null)
         {
+            NavigateTo(GenerateNavigateUrl(target, queryParams));
+        }
+
+        /// <summary>
+        /// Navigates to the specified path, and removes the backstack
+        /// </summary>
+        /// <param name="target">The target to navigate to.</param>
+        /// <param name="queryParams">Optional extra query string params.</param>
+        public static void NavigateToAndRemoveBackStack(NavigationTarget target, Dictionary<string, string> queryParams = null)
+        {
+            if (queryParams == null)
+                queryParams = new Dictionary<string, string>();
+            queryParams.Add("removeBackStack", "true");
+
             NavigateTo(GenerateNavigateUrl(target, queryParams));
         }
     }

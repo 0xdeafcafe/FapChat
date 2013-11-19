@@ -14,7 +14,7 @@
     SupportedOrientations="Portrait"  Orientation="Portrait"
     shell:SystemTray.IsVisible="True"
     shell:SystemTray.BackgroundColor="#e9c109"
-    shell:SystemTray.ForegroundColor="#000000">
+    shell:SystemTray.ForegroundColor="#ffffff">
 	<phone:PhoneApplicationPage.Resources>
         <converters:VipBoolToFriendlyConverter x:Key="IValueVipToFriendly"/>
     </phone:PhoneApplicationPage.Resources>

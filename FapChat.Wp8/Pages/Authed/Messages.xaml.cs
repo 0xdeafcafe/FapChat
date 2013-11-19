@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Windows;
@@ -26,10 +25,10 @@ namespace FapChat.Wp8.Pages.Authed
             UpdateBindings();
         }
 
-        private bool _isShit;
+        private bool _mediaIsBeingDisplayed;
         private async void ButtonSnap_Click(object sender, RoutedEventArgs e)
         {
-            if (_isShit)
+            if (_mediaIsBeingDisplayed)
             {
                 EndMedia();
                 return;
@@ -70,7 +69,7 @@ namespace FapChat.Wp8.Pages.Authed
         }
         private void ButtonSnap_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
         {
-            if (_isShit)
+            if (_mediaIsBeingDisplayed)
             {
                 EndMedia();
                 return;
@@ -91,7 +90,7 @@ namespace FapChat.Wp8.Pages.Authed
         }
         private void ButtonSnap_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
         {
-            if (!_isShit) return;
+            if (!_mediaIsBeingDisplayed) return;
             EndMedia();
         }
 
@@ -119,7 +118,7 @@ namespace FapChat.Wp8.Pages.Authed
             HideProgress();
             if (update == null)
             {
-                Navigation.NavigateTo(Navigation.NavigationTarget.Login);
+                Navigation.NavigateToAndRemoveBackStack(Navigation.NavigationTarget.Login);
                 MessageBox.Show("You are not authorized, please log back in.", "Unable to authenticate",
                     MessageBoxButton.OK);
             }
@@ -209,13 +208,13 @@ namespace FapChat.Wp8.Pages.Authed
                     break;
             }
 
-            _isShit = true;
+            _mediaIsBeingDisplayed = true;
         }
 
         private void EndMedia()
         {
             SystemTray.IsVisible = ApplicationBar.IsVisible = true;
-            _isShit = false;
+            _mediaIsBeingDisplayed = false;
 
             MediaContainer.Visibility = Visibility.Collapsed;
             ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;

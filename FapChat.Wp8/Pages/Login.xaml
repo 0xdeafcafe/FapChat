@@ -14,7 +14,7 @@
     SupportedOrientations="Portrait"  Orientation="Portrait"
     shell:SystemTray.IsVisible="True"
     shell:SystemTray.BackgroundColor="#e9c109"
-    shell:SystemTray.ForegroundColor="#000000">
+    shell:SystemTray.ForegroundColor="#ffffff">
 
     <!--LayoutRoot is the root grid where all page content is placed-->
     <Grid x:Name="LayoutRoot" Background="#FFFFFF">

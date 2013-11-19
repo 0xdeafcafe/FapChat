@@ -16,7 +16,7 @@
     SupportedOrientations="Portrait"  Orientation="Portrait"
     shell:SystemTray.IsVisible="True"
     shell:SystemTray.BackgroundColor="#e9c109"
-    shell:SystemTray.ForegroundColor="#000000">
+    shell:SystemTray.ForegroundColor="#ffffff">
     <phone:PhoneApplicationPage.Resources>
         <converters:GetActiveUserFromSnap x:Key="IValueActiveUserFromSnap" />
         <converters:GetFriendlySnapStatus x:Key="IValueFriendlySnapStatus" />
