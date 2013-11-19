@@ -1,8 +1,12 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using FapChat.Core.Snapchat.Models;
 using FapChat.Wp8.Helpers;
@@ -17,13 +21,22 @@ namespace FapChat.Wp8.Pages.Authed
         {
             InitializeComponent();
 
+            MediaContainer.Visibility = Visibility.Collapsed;
+
             UpdateBindings();
         }
 
+        private bool _isShit;
         private async void ButtonSnap_Click(object sender, RoutedEventArgs e)
         {
+            if (_isShit)
+            {
+                EndMedia();
+                return;
+            }
+
             var button = sender as Button;
-            if (button == null)
+            if (button == null || button.Tag == null)
                 return;
 
             var snap = button.Tag as Snap;
@@ -36,29 +49,50 @@ namespace FapChat.Wp8.Pages.Authed
             var username = App.IsolatedStorage.UserAccount.UserName;
             var authToken = App.IsolatedStorage.UserAccount.AuthToken;
 
-            if (snap.HasMedia)
+            if (snap.HasMedia || snap.RecipientName != null || snap.Status != SnapStatus.Delivered) return;
+
+            snap.Status = SnapStatus.Downloading;
+            UpdateBindings();
+
+            var blob = await Core.Snapchat.Functions.GetBlob(snap.Id, username, authToken);
+            var cachedBlob = new CachedMediaBlob
             {
+                BlobMediaType = snap.MediaType,
+                Id = snap.Id
+            };
+            cachedBlob.SetLocalFileBytes(blob);
 
-            }
-            else if (!snap.HasMedia && 
-                snap.RecipientName == null &&
-                snap.Status == SnapStatus.Delivered)
+            App.IsolatedStorage.CachedMediaBlobs.Add(cachedBlob);
+            App.IsolatedStorage.CachedMediaBlobs = App.IsolatedStorage.CachedMediaBlobs;
+
+            snap.Status = SnapStatus.Delivered;
+            UpdateBindings();
+        }
+        private void ButtonSnap_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
+        {
+            if (_isShit)
             {
-                snap.Status = SnapStatus.Downloading;
-                UpdateBindings();
-
-                var blob = await Core.Snapchat.Functions.GetBlob(snap.Id, username, authToken);
-                var cachedBlob = new CachedMediaBlob
-                {
-                    BlobMediaType = snap.MediaType,
-                    Id = snap.Id,
-                    LocalFileBytes = blob
-                };
-                // TODO: Save this blob
-
-                snap.Status = SnapStatus.Delivered;
-                UpdateBindings();
+                EndMedia();
+                return;
             }
+
+            var button = sender as Button;
+            if (button == null || button.Tag == null) return;
+
+            var snap = button.Tag as Snap;
+            if (snap == null || snap.Status == SnapStatus.Downloading) return;
+
+            if (!snap.HasMedia && snap.RecipientName == null && snap.Status == SnapStatus.Delivered) return;
+
+            var cachedMediaBlob = App.IsolatedStorage.CachedMediaBlobs.FirstOrDefault(c => c.Id == snap.Id);
+            if (cachedMediaBlob == null) return;
+
+            StartMedia(cachedMediaBlob);
+        }
+        private void ButtonSnap_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
+        {
+            if (!_isShit) return;
+            EndMedia();
         }
 
         private void UpdateBindings()
@@ -146,6 +180,47 @@ namespace FapChat.Wp8.Pages.Authed
                         IsIndeterminate = true,
                         Text = "[hidden] Waiting for Command..."
                     });
+        }
+
+        #endregion
+
+        #region Media
+
+        private void StartMedia(CachedMediaBlob blob)
+        {
+            SystemTray.IsVisible = ApplicationBar.IsVisible = false;
+            ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+            MediaContainer.Visibility = Visibility.Visible;
+
+            var blobData = blob.RetrieveBlobData();
+
+            switch (blob.BlobMediaType)
+            {
+                case MediaType.FriendRequestImage:
+                case MediaType.Image:
+                    MediaViewerImage.Source = blobData as BitmapImage;
+                    break;
+
+                case MediaType.Video:
+                case MediaType.VideoNoAudio:
+                case MediaType.FriendRequestVideo:
+                case MediaType.FriendRequestVideoNoAudio:
+                    MediaViewerVideo.SetSource(blobData as IsolatedStorageFileStream);
+                    break;
+            }
+
+            _isShit = true;
+        }
+
+        private void EndMedia()
+        {
+            SystemTray.IsVisible = ApplicationBar.IsVisible = true;
+            _isShit = false;
+
+            MediaContainer.Visibility = Visibility.Collapsed;
+            ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+            MediaViewerImage.Source = null;
+            MediaViewerVideo.Source = null;
         }
 
         #endregion

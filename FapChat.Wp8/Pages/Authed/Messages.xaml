@@ -50,13 +50,15 @@
 
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
-            <ScrollViewer>
+            <ScrollViewer x:Name="ScrollViewer">
                 <ItemsControl x:Name="ItemsSnaps" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button x:Name="ButtonSnap" Style="{StaticResource EmptyItemSourceAction}" Tag="{Binding}" 
                                     toolkit:TiltEffect.IsTiltEnabled="{Binding Converter={StaticResource IValueCheckIfSnapWasRecieved}}"
-                                    Click="ButtonSnap_Click">
+                                    Click="ButtonSnap_Click" 
+                                    ManipulationCompleted="ButtonSnap_ManipulationCompleted" 
+                                    ManipulationStarted="ButtonSnap_ManipulationStarted">
                                 <Grid Tag="{Binding}" Height="80">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="80" />
@@ -86,6 +88,15 @@
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
             </ScrollViewer>
+        </Grid>
+
+        <Grid Background="Black" x:Name="MediaContainer" Margin="0,-2,0,-2" Grid.RowSpan="2" HorizontalAlignment="Stretch" Visibility="Visible">
+            <MediaElement x:Name="MediaViewerVideo" />
+            <Image x:Name="MediaViewerImage" />
+            
+            <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,20,20,0" Width="50" Height="50" Background="#BF343434">
+                <TextBlock Text="10" TextAlignment="Center" Margin="0,5,0,0" FontSize="30" />
+            </Grid>
         </Grid>
         
         <Rectangle Grid.RowSpan="2" x:Name="PendingOverlay" HorizontalAlignment="Stretch" Fill="#e9c109" Opacity="0.425" Visibility="Collapsed"/>

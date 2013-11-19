@@ -16,7 +16,10 @@ namespace FapChat.Wp8.Converters
             switch (snap.Status)
             {
                 case SnapStatus.Delivered:
-                    return snap.RecipientName == null ? "Tap to Load..." : "Delivered...";
+                    if (snap.RecipientName != null)
+                        return "Delivered...";
+
+                    return snap.HasMedia ? "Tap and Hold..." : "Tap to Load...";
 
                 case SnapStatus.None:
                     return "None...";

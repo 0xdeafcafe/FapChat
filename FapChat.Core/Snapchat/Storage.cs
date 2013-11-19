@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO.IsolatedStorage;
 using FapChat.Core.Snapchat.Models;
 using Newtonsoft.Json;
@@ -9,7 +10,7 @@ namespace FapChat.Core.Snapchat
     /// <summary>
     /// Isolated Storage Vault
     /// </summary>
-    public class Storage
+    public class Storage : INotifyPropertyChanged
     {
         /// <summary>
         /// Application Settings stored in Isolated Storage
@@ -67,6 +68,30 @@ namespace FapChat.Core.Snapchat
         public DateTime FriendsBestsLastUpdate { get; private set; }
 
         /// <summary>
+        /// Holds the Cached Media Blobs
+        /// </summary>
+        public List<CachedMediaBlob> CachedMediaBlobs
+        {
+            get
+            {
+                // Return the Account Details
+                return _cachedMediaBlobs;
+            }
+            set
+            {
+                SetField(ref _cachedMediaBlobs, value, "CachedMediaBlobs");
+
+                // Save them to Isolated Storage
+                Save("cached-media-blobs", JsonConvert.SerializeObject(_cachedMediaBlobs));
+
+                // Update the Last Updated data
+                CachedMediaBlobsLastUpdate = DateTime.UtcNow;
+            }
+        }
+        private List<CachedMediaBlob> _cachedMediaBlobs;
+        public DateTime CachedMediaBlobsLastUpdate { get; private set; }
+
+        /// <summary>
         /// Initalize the Isolated Storage Class
         /// </summary>
         public Storage()
@@ -82,7 +107,8 @@ namespace FapChat.Core.Snapchat
             var storageData = new Dictionary<string, object>
             {
                 { "user-account", _userAccount },
-                { "friends-bests", _friendsBests }
+                { "friends-bests", _friendsBests },
+                { "cached-media-blobs", _cachedMediaBlobs }
             };
 
             foreach (var data in storageData)
@@ -110,12 +136,23 @@ namespace FapChat.Core.Snapchat
         public void Load()
         {
             // Load Account Data
-            _userAccount = _appSettings.Contains("user-account") ? JsonConvert.DeserializeObject<Account>(_appSettings["user-account"].ToString()) : null;
+            UserAccount = _appSettings.Contains("user-account")
+                ? JsonConvert.DeserializeObject<Account>(_appSettings["user-account"].ToString())
+                : null;
             UserAccountLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
 
             // Load Friends Bests
-            _friendsBests = _appSettings.Contains("friends-bests") ? JsonConvert.DeserializeObject<Dictionary<string, Best>>(_appSettings["friends-bests"].ToString()) : null;
+            FriendsBests = _appSettings.Contains("friends-bests")
+                ? JsonConvert.DeserializeObject<Dictionary<string, Best>>(_appSettings["friends-bests"].ToString())
+                : null;
             FriendsBestsLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
+
+            // Load Friends Bests
+            CachedMediaBlobs = _appSettings.Contains("cached-media-blobs")
+                ? JsonConvert.DeserializeObject<List<CachedMediaBlob>>(_appSettings["cached-media-blobs"].ToString()) ??
+                  new List<CachedMediaBlob>()
+                : new List<CachedMediaBlob>();
+            CachedMediaBlobsLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
         }
 
         /// <summary>
@@ -128,6 +165,27 @@ namespace FapChat.Core.Snapchat
 
             FriendsBests = null;
             FriendsBestsLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
+
+            CachedMediaBlobs = new List<CachedMediaBlob>();
+            CachedMediaBlobsLastUpdate = new DateTime(1994, 08, 18, 14, 0, 0, 0);
         }
+
+        #region Boilerplate
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        }
+        protected bool SetField<T>(ref T field, T value, string propertyName)
+        {
+            if (EqualityComparer<T>.Default.Equals(field, value)) return false;
+            field = value;
+            OnPropertyChanged(propertyName);
+            return true;
+        }
+
+        #endregion
     }
 }

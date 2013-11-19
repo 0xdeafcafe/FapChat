@@ -126,14 +126,47 @@ namespace FapChat.Core.Snapchat.Models
 	        get { return _mediaType; }
             set { SetField(ref _mediaType, value, "MediaType"); }
 	    }
-	    private MediaType _mediaType;
+        private MediaType _mediaType;
+
+        /// <summary>
+        /// The Caption Text to display on the snap
+        /// </summary>
+        [JsonPropertyAttribute("cap_text")]
+        public String CaptionText
+        {
+            get { return _captionText; }
+            set { SetField(ref _captionText, value, "CaptionText"); }
+        }
+        private String _captionText;
+
+        /// <summary>
+        /// The position of the screen to display the snap (percentage)
+        /// </summary>
+        [JsonPropertyAttribute("cap_pos")]
+        public Double CapturePosition
+        {
+            get { return _capturePosition; }
+            set { SetField(ref _capturePosition, value, "CapturePosition"); }
+        }
+        private Double _capturePosition;
+
+        /// <summary>
+        /// The length of the, in seconds, to display the snap
+        /// </summary>
+        [JsonPropertyAttribute("t")]
+	    public Int32? CaptureTime
+	    {
+	        get { return _captureTime ?? 10; }
+            set { SetField(ref _captureTime, value ?? 10, "CaptureTime"); }
+	    }
+        private Int32? _captureTime;
 
         /// <summary>
         /// Specifies if the Media has been cached locally
         /// </summary>
 	    public Boolean HasMedia
 	    {
-	        get { return Blob.CheckMediaIsCached(Id); }
+	        get { return Blob.CheckMediaIsCached(Id, MediaType); }
 	    }
 
         #region Boilerplate

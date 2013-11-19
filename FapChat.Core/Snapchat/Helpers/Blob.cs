@@ -1,4 +1,6 @@
-﻿using FapChat.Core.Crypto;
+﻿using System.IO;
+using FapChat.Core.Crypto;
+using FapChat.Core.Snapchat.Models;
 
 namespace FapChat.Core.Snapchat.Helpers
 {
@@ -29,9 +31,10 @@ namespace FapChat.Core.Snapchat.Helpers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static bool CheckMediaIsCached(string id)
+        public static bool CheckMediaIsCached(string id, MediaType mediaType)
         {
-            return false;
+            var filePath = IsolatedStorage.GetFileNameTypeFromMediaType(id, mediaType);
+            return IsolatedStorage.FileExists(filePath);
         }
 
         /// <summary>
@@ -41,15 +44,15 @@ namespace FapChat.Core.Snapchat.Helpers
         /// <returns></returns>
         public static byte[] DecryptBlob(byte[] data)
         {
-            //try
-            //{
+            try
+            {
                 data = Aes.DecryptData(data, KeyVault.BlobEncryptionKey);
                 return ValidateMediaBlob(data) ? data : null;
-            //}
-            //catch
-            //{
-            //    return null;
-            //}
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

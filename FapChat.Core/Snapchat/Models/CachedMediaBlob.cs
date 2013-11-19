@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO.IsolatedStorage;
+using System.Windows.Media.Imaging;
 using FapChat.Core.Snapchat.Helpers;
-using Microsoft.Xna.Framework.Media;
 
 namespace FapChat.Core.Snapchat.Models
 {
@@ -29,21 +30,38 @@ namespace FapChat.Core.Snapchat.Models
         private MediaType _blobMediaType;
 
         /// <summary>
-        /// 
+        /// Gets the Data of the Blob from Isolated Storage
         /// </summary>
-        public Byte[] LocalFileBytes
+        /// <returns></returns>
+        public object RetrieveBlobData()
         {
-            get
+            var filePath = IsolatedStorage.GetFileNameTypeFromMediaType(Id, _blobMediaType);
+            switch (_blobMediaType)
             {
-                var filePath = string.Format("{0}.{1}", Id, IsolatedStorage.GetFileNameTypeFromMediaType(_blobMediaType));
-                return IsolatedStorage.GetFile(filePath);
+                case MediaType.Image:
+                case MediaType.FriendRequestImage:
+                    return IsolatedStorage.RetrieveImageFile(filePath);
+
+                case MediaType.VideoNoAudio:
+                case MediaType.Video:
+                case MediaType.FriendRequestVideoNoAudio:
+                case MediaType.FriendRequestVideo:
+                    return IsolatedStorage.RetrieveVideoFile(filePath);
+
+                default:
+                    return null;
             }
-            set
-            {
-                var filePath = string.Format("{0}.{1}", Id, IsolatedStorage.GetFileNameTypeFromMediaType(_blobMediaType));
-                IsolatedStorage.SaveFile(filePath, value);
-                new MediaLibrary().SavePicture(filePath, value);
-            }
+        }
+
+        /// <summary>
+        /// Writes the Blob to Isolated Storage
+        /// </summary>
+        /// <param name="data"></param>
+        public void SetLocalFileBytes(Byte[] data)
+        {
+            var filePath = IsolatedStorage.GetFileNameTypeFromMediaType(Id, _blobMediaType);
+            IsolatedStorage.SaveFile(filePath, data);
+            //new MediaLibrary().SavePicture(filePath, data);
         }
 
         #region Boilerplate
