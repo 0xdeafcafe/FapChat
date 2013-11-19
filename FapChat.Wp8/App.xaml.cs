@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Markup;
 using System.Windows.Navigation;
@@ -8,6 +9,7 @@ using FapChat.Wp8.Helpers;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using FapChat.Wp8.Resources;
+using Telerik.Windows.Controls;
 
 namespace FapChat.Wp8
 {
@@ -63,6 +65,9 @@ namespace FapChat.Wp8
 
             // Global handler for page navigation
             RootFrame.Navigating += RootFrame_Navigating;
+
+            // Global handler for page nagivation completion
+            RootFrame.Navigated += RootFrame_Navigated;
         }
 
         // Code to execute when the application is launching (eg, from Start)
@@ -97,6 +102,16 @@ namespace FapChat.Wp8
                 // A navigation has failed; break into the debugger
                 Debugger.Break();
             }
+        }
+
+        // Code to execute after a successfull navigation
+        private void RootFrame_Navigated(object sender, NavigationEventArgs e)
+        {
+            // le hacky as fuck
+            if (!e.Uri.OriginalString.Contains("removeBackStack=true")) return;
+
+            while (RootFrame.BackStack.Any())
+                RootFrame.RemoveBackEntry();
         }
 
         // Code to execute during a navigation
