@@ -103,6 +103,7 @@
     <Compile Include="Converters\GetActiveUserFromSnap.cs" />
     <Compile Include="Converters\GetFriendlySnapStatus.cs" />
     <Compile Include="Converters\GetFriendlyTimeFromSnapChatTimestamp.cs" />
+    <Compile Include="Converters\GetSnapCountdown.cs" />
     <Compile Include="Converters\IconFromSnapMediaType.cs" />
     <Compile Include="Converters\VipBoolToFriendlyConverter.cs" />
     <Compile Include="Helpers\Navigation.cs" />

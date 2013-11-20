@@ -9,7 +9,6 @@ using FapChat.Wp8.Helpers;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using FapChat.Wp8.Resources;
-using Telerik.Windows.Controls;
 
 namespace FapChat.Wp8
 {

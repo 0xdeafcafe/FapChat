@@ -105,8 +105,10 @@
         <Style x:Key="EmptyItemSourceAction" TargetType="Button">
         	<Setter Property="Background" Value="Transparent"/>
         	<Setter Property="BorderBrush" Value="Transparent"/>
-        	<Setter Property="Foreground" Value="Transparent"/>
-        	<Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Foreground" Value="Transparent"/>
+            <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+            <Setter Property="HorizontalAlignment" Value="Stretch"/>
+            <Setter Property="BorderThickness" Value="0"/>
         	<Setter Property="Padding" Value="0"/>
         	<Setter Property="Template">
         		<Setter.Value>
@@ -120,11 +122,13 @@
         							<VisualState x:Name="Disabled" />
         						</VisualStateGroup>
         					</VisualStateManager.VisualStateGroups>
-        					<ContentControl x:Name="ContentContainer" HorizontalAlignment="Left"
-                                            ContentTemplate="{TemplateBinding ContentTemplate}" Content="{TemplateBinding Content}" 
+        					<ContentControl x:Name="ContentContainer"
+                                            ContentTemplate="{TemplateBinding ContentTemplate}" 
+                                            Content="{TemplateBinding Content}" 
                                             Foreground="{TemplateBinding Foreground}" 
                                             VerticalAlignment="{TemplateBinding VerticalAlignment}"
                                             HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}" 
+                                            HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" 
                                             Padding="{TemplateBinding Padding}" 
                                             VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"/>
         				</Grid>

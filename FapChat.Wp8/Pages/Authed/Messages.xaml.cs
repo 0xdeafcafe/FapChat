@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO.IsolatedStorage;
 using System.Linq;
 using System.Windows;
@@ -7,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
+using System.Windows.Threading;
 using FapChat.Core.Snapchat.Models;
 using FapChat.Wp8.Helpers;
 using FapChat.Wp8.Interfaces;
@@ -21,11 +23,59 @@ namespace FapChat.Wp8.Pages.Authed
             InitializeComponent();
 
             MediaContainer.Visibility = Visibility.Collapsed;
-
             UpdateBindings();
-        }
 
+            var checkExpireTimes = new DispatcherTimer();
+            checkExpireTimes.Tick += (sender, args) =>
+            {
+                if (App.IsolatedStorage == null || App.IsolatedStorage.UserAccount == null ||
+                    App.IsolatedStorage.UserAccount.Snaps == null)
+                    return;
+
+                foreach (var snap in App.IsolatedStorage.UserAccount.Snaps.Where(snap => snap.RecipientName == null))
+                {
+                    switch (snap.GetState)
+                    {
+                        case SnapState.Expired:
+                            if (snap.Status != SnapStatus.Opened)
+                            {
+                                snap.RemainingSeconds = null;
+                                snap.Status = SnapStatus.Opened;
+                                UpdateBindings();
+
+                                if (_currentSnap == snap)
+                                    EndMedia();
+                            }
+                            break;
+
+                        case SnapState.Available:
+                            // ReSharper disable once PossibleInvalidOperationException
+                            var secondsRemaining = Convert.ToInt32(((DateTime)snap.OpenedAt - DateTime.UtcNow).TotalSeconds) +
+                                       snap.CaptureTime;
+
+                            if (secondsRemaining <= 0)
+                            {
+                                snap.Status = SnapStatus.Opened;
+                                snap.RemainingSeconds = null;
+                                UpdateBindings();
+
+                                if (_currentSnap == snap)
+                                    EndMedia();
+                            }
+                            else
+                                snap.RemainingSeconds = secondsRemaining;
+                            break;
+                    }
+                }
+            };
+            checkExpireTimes.Interval = new TimeSpan(0, 0, 0, 1);
+            checkExpireTimes.Start();
+        }
+        
         private bool _mediaIsBeingDisplayed;
+        private Snap _currentSnap;
+        private bool _mouseStillDown;
+        private double _scrollYIndex = 0;
         private async void ButtonSnap_Click(object sender, RoutedEventArgs e)
         {
             if (_mediaIsBeingDisplayed)
@@ -63,33 +113,56 @@ namespace FapChat.Wp8.Pages.Authed
 
             App.IsolatedStorage.CachedMediaBlobs.Add(cachedBlob);
             App.IsolatedStorage.CachedMediaBlobs = App.IsolatedStorage.CachedMediaBlobs;
+            App.IsolatedStorage.UserAccount.Snaps.First(s => s.Id == snap.Id).OpenedAt = DateTime.UtcNow;
 
             snap.Status = SnapStatus.Delivered;
             UpdateBindings();
         }
         private void ButtonSnap_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
         {
-            if (_mediaIsBeingDisplayed)
-            {
-                EndMedia();
+            if (_mouseStillDown)
                 return;
-            }
 
-            var button = sender as Button;
-            if (button == null || button.Tag == null) return;
+            _mouseStillDown = true;
+            _scrollYIndex = ScrollViewer.VerticalOffset;
+            var timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 300) };
+            timer.Tick += (o, args) =>
+            {
+                timer.Stop();
+                if (!_mouseStillDown)
+                    return;
 
-            var snap = button.Tag as Snap;
-            if (snap == null || snap.Status == SnapStatus.Downloading) return;
+                var diff = _scrollYIndex - ScrollViewer.VerticalOffset;
+                Debug.WriteLine(diff);
+                if (diff < -10 || diff > 10)
+                    return;
 
-            if (!snap.HasMedia && snap.RecipientName == null && snap.Status == SnapStatus.Delivered) return;
+                if (_mediaIsBeingDisplayed)
+                {
+                    EndMedia();
+                    return;
+                }
 
-            var cachedMediaBlob = App.IsolatedStorage.CachedMediaBlobs.FirstOrDefault(c => c.Id == snap.Id);
-            if (cachedMediaBlob == null) return;
+                var button = sender as Button;
+                if (button == null || button.Tag == null) return;
 
-            StartMedia(cachedMediaBlob);
+                var snap = button.Tag as Snap;
+                if (snap == null || snap.Status == SnapStatus.Downloading) return;
+
+                if (!snap.HasMedia && snap.RecipientName == null) return;
+                if (snap.Status != SnapStatus.Delivered) return;
+
+                var cachedMediaBlob = App.IsolatedStorage.CachedMediaBlobs.FirstOrDefault(c => c.Id == snap.Id);
+                if (cachedMediaBlob == null) return;
+
+                StartMedia(cachedMediaBlob, snap);
+            };
+            timer.Start();
         }
         private void ButtonSnap_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
         {
+            _mouseStillDown = false;
+
             if (!_mediaIsBeingDisplayed) return;
             EndMedia();
         }
@@ -134,6 +207,12 @@ namespace FapChat.Wp8.Pages.Authed
         {
             if (_maskLayerIndex > 0)
                 e.Cancel = true;
+
+            if (_mediaIsBeingDisplayed)
+            {
+                e.Cancel = true;
+                EndMedia();
+            }
 
             base.OnBackKeyPress(e);
         }
@@ -185,13 +264,15 @@ namespace FapChat.Wp8.Pages.Authed
 
         #region Media
 
-        private void StartMedia(CachedMediaBlob blob)
+        private void StartMedia(CachedMediaBlob blob, Snap snap)
         {
             SystemTray.IsVisible = ApplicationBar.IsVisible = false;
             ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
             MediaContainer.Visibility = Visibility.Visible;
 
             var blobData = blob.RetrieveBlobData();
+            MediaCountdownTimer.DataContext = snap;
+            _currentSnap = snap;
 
             switch (blob.BlobMediaType)
             {
@@ -220,6 +301,8 @@ namespace FapChat.Wp8.Pages.Authed
             ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
             MediaViewerImage.Source = null;
             MediaViewerVideo.Source = null;
+            MediaCountdownTimer.DataContext = null;
+            _currentSnap = null;
         }
 
         #endregion

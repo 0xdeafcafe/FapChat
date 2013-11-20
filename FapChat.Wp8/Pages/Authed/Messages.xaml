@@ -24,6 +24,7 @@
         <converters:IconFromSnapMediaType x:Key="IValueIconFromSnapMediaType" />
         <converters:CheckIfSnapWasRecieved x:Key="IValueCheckIfSnapWasRecieved" />
         <converters:CheckIfSnapIsDownloading x:Key="IValueCheckIfSnapIsDownloading" />
+        <converters:GetSnapCountdown x:Key="IValueGetSnapCountdown" />
     </phone:PhoneApplicationPage.Resources>
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar BackgroundColor="{StaticResource FapAccent}" Mode="Default">
@@ -51,7 +52,8 @@
         <!--ContentPanel - place additional content here-->
         <Grid x:Name="ContentPanel" Grid.Row="1" Margin="12,0,12,0">
             <ScrollViewer x:Name="ScrollViewer">
-                <ItemsControl x:Name="ItemsSnaps" ItemsSource="{Binding}" HorizontalContentAlignment="Stretch">
+                <ItemsControl x:Name="ItemsSnaps" ItemsSource="{Binding}" 
+                              HorizontalContentAlignment="Stretch">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
                             <Button x:Name="ButtonSnap" Style="{StaticResource EmptyItemSourceAction}" Tag="{Binding}" 
@@ -59,10 +61,12 @@
                                     Click="ButtonSnap_Click" 
                                     ManipulationCompleted="ButtonSnap_ManipulationCompleted" 
                                     ManipulationStarted="ButtonSnap_ManipulationStarted">
-                                <Grid Tag="{Binding}" Height="80">
+                                
+                                <Grid HorizontalAlignment="Stretch" Height="80">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="80" />
                                         <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="60" />
                                     </Grid.ColumnDefinitions>
 
                                     <Image Grid.Column="0" Source="{Binding Converter={StaticResource IValueIconFromSnapMediaType}}" Margin="10" Stretch="UniformToFill" />
@@ -82,6 +86,14 @@
                                         </TextBlock>
                                         <ProgressBar Width="150" Visibility="{Binding Converter={StaticResource IValueCheckIfSnapIsDownloading}}" HorizontalAlignment="Stretch" IsIndeterminate="True"></ProgressBar>
                                     </StackPanel>
+
+                                    <ContentControl VerticalAlignment="Center" Grid.Column="2">
+                                        <TextBlock Text="{Binding Path=RemainingSeconds, FallbackValue=10}" >
+                                            <TextBlock.Foreground>
+                                                <SolidColorBrush Color="{StaticResource FapAccent}"/>
+                                            </TextBlock.Foreground>
+                                        </TextBlock>
+                                    </ContentControl>
                                 </Grid>
                             </Button>
                         </DataTemplate>
@@ -90,12 +102,16 @@
             </ScrollViewer>
         </Grid>
 
-        <Grid Background="Black" x:Name="MediaContainer" Margin="0,-2,0,-2" Grid.RowSpan="2" HorizontalAlignment="Stretch" Visibility="Visible">
+        <Grid Background="Black" x:Name="MediaContainer" Margin="0,-2,0,-2" Grid.RowSpan="2" HorizontalAlignment="Stretch" Visibility="Collapsed">
             <MediaElement x:Name="MediaViewerVideo" />
             <Image x:Name="MediaViewerImage" />
             
             <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,20,20,0" Width="50" Height="50" Background="#BF343434">
-                <TextBlock Text="10" TextAlignment="Center" Margin="0,5,0,0" FontSize="30" />
+                <TextBlock x:Name="MediaCountdownTimer" Text="{Binding Path=RemainingSeconds, FallbackValue=10}" TextAlignment="Center" Margin="0,5,0,0" FontSize="30">
+                    <TextBlock.Foreground>
+                        <SolidColorBrush Color="{StaticResource FapAccent}"/>
+                    </TextBlock.Foreground>
+                </TextBlock>
             </Grid>
         </Grid>
         

@@ -30,7 +30,7 @@ namespace FapChat.Core.Snapchat
             set
             {
                 // Set the Account Details
-                _userAccount = value;
+                SetField(ref _userAccount, value, "UserAccount");
 
                 // Save them to Isolated Storage
                 Save("user-account", JsonConvert.SerializeObject(value));
@@ -49,13 +49,13 @@ namespace FapChat.Core.Snapchat
         {
             get
             {
-                // Return the Account Details
+                // Return the Friend Bests
                 return _friendsBests;
             }
             set
             {
-                // Set the Account Details
-                _friendsBests = value;
+                // Set the Friend Bests
+                SetField(ref _friendsBests, value, "FriendsBests");
 
                 // Save them to Isolated Storage
                 Save("friends-bests", JsonConvert.SerializeObject(value));
@@ -74,11 +74,12 @@ namespace FapChat.Core.Snapchat
         {
             get
             {
-                // Return the Account Details
+                // Return the Cached Media Blobs
                 return _cachedMediaBlobs;
             }
             set
             {
+                // Set the Cached Media Blobs
                 SetField(ref _cachedMediaBlobs, value, "CachedMediaBlobs");
 
                 // Save them to Isolated Storage

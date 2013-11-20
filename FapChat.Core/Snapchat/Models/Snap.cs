@@ -35,6 +35,16 @@ namespace FapChat.Core.Snapchat.Models
         FriendRequestVideoNoAudio = 0x06
     }
 
+    /// <summary>
+    /// The Possible State's of the Snap
+    /// </summary>
+    public enum SnapState
+    {
+        NotApplicable,
+        Available,
+        Expired
+    }
+
 	/// <summary>
 	/// 
 	/// </summary>
@@ -162,11 +172,48 @@ namespace FapChat.Core.Snapchat.Models
         private Int32? _captureTime;
 
         /// <summary>
+        /// Stuff
+        /// </summary>
+        [JsonPropertyAttribute("oat")]
+	    public DateTime? OpenedAt
+	    {
+	        get { return _openedAt; }
+            set { SetField(ref _openedAt, value, "OpenedAt"); }
+	    }
+        private DateTime? _openedAt;
+
+        /// <summary>
+        /// Stuff
+        /// </summary>
+        [JsonPropertyAttribute("rsecs")]
+	    public int? RemainingSeconds
+	    {
+            get { return _remainingSeconds; }
+            set { SetField(ref _remainingSeconds, value, "RemainingSeconds"); }
+	    }
+	    private int? _remainingSeconds;
+
+        /// <summary>
         /// Specifies if the Media has been cached locally
         /// </summary>
 	    public Boolean HasMedia
 	    {
 	        get { return Blob.CheckMediaIsCached(Id, MediaType); }
+	    }
+
+        /// <summary>
+        /// Gets the State of the Snap
+        /// </summary>
+	    public SnapState GetState
+	    {
+	        get
+	        {
+	            if (OpenedAt == null)
+                    return SnapState.NotApplicable;
+
+// ReSharper disable once PossibleInvalidOperationException
+	            return ((DateTime)OpenedAt).AddSeconds((Int32)CaptureTime) > DateTime.UtcNow ? SnapState.Available : SnapState.Expired;
+	        }
 	    }
 
         #region Boilerplate
