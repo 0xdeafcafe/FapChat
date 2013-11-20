@@ -75,7 +75,7 @@ namespace FapChat.Wp8.Pages.Authed
         private bool _mediaIsBeingDisplayed;
         private Snap _currentSnap;
         private bool _mouseStillDown;
-        private double _scrollYIndex = 0;
+        private double _scrollYIndex;
         private async void ButtonSnap_Click(object sender, RoutedEventArgs e)
         {
             if (_mediaIsBeingDisplayed)
@@ -113,10 +113,18 @@ namespace FapChat.Wp8.Pages.Authed
 
             App.IsolatedStorage.CachedMediaBlobs.Add(cachedBlob);
             App.IsolatedStorage.CachedMediaBlobs = App.IsolatedStorage.CachedMediaBlobs;
-            App.IsolatedStorage.UserAccount.Snaps.First(s => s.Id == snap.Id).OpenedAt = DateTime.UtcNow;
+            var openedAt = DateTime.UtcNow;
+            App.IsolatedStorage.UserAccount.Snaps.First(s => s.Id == snap.Id).OpenedAt = openedAt;
 
             snap.Status = SnapStatus.Delivered;
             UpdateBindings();
+
+            SetProgress("Syncing with Snapchat...");
+            if (snap.CaptureTime != null)
+                await Core.Snapchat.Functions.SendViewedEvent(snap.Id,
+                    Core.Snapchat.Helpers.Timestamps.ConvertToUnixTimestamp(openedAt), (int)snap.CaptureTime, username,
+                    authToken);
+            HideProgress();
         }
         private void ButtonSnap_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
         {
@@ -303,6 +311,12 @@ namespace FapChat.Wp8.Pages.Authed
             MediaViewerVideo.Source = null;
             MediaCountdownTimer.DataContext = null;
             _currentSnap = null;
+        }
+
+        private void MediaViewerVideo_MediaEnded(object sender, RoutedEventArgs e)
+        {
+            if (_mediaIsBeingDisplayed)
+                EndMedia();
         }
 
         #endregion

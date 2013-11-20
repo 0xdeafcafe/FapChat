@@ -23,6 +23,15 @@ namespace FapChat.Core.Snapchat.Helpers
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
+        public static double GenerateRetardedTimestampWithMilliseconds()
+        {
+            return double.Parse((DateTime.UtcNow - UnixEpoch).TotalSeconds.ToString(CultureInfo.InvariantCulture));
+        }
+
+        /// <summary>
         /// Convert a SnapChat timestamp into a DateTime object.
         /// </summary>
         /// <param name="retardedTimeStamp">The snapchat timestamp.</param>
@@ -35,6 +44,16 @@ namespace FapChat.Core.Snapchat.Helpers
                 unixShit = unixShit.Remove(10);
 
             return UnixEpoch.AddSeconds(Int64.Parse(unixShit));
+        }
+
+        /// <summary>
+        /// Convert a DateTime object into a normal Unix Timestamp
+        /// </summary>
+        /// <param name="dateTime">The DateTime object to convert.</param>
+        /// <returns>A 32bit integer that holds the unix Timestamp</returns>
+        public static int ConvertToUnixTimestamp(DateTime dateTime)
+        {
+            return (int)((DateTime.UtcNow - UnixEpoch).TotalSeconds);
         }
     }
 }

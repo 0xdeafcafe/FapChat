@@ -103,7 +103,7 @@
         </Grid>
 
         <Grid Background="Black" x:Name="MediaContainer" Margin="0,-2,0,-2" Grid.RowSpan="2" HorizontalAlignment="Stretch" Visibility="Collapsed">
-            <MediaElement x:Name="MediaViewerVideo" />
+            <MediaElement x:Name="MediaViewerVideo" MediaEnded="MediaViewerVideo_MediaEnded" />
             <Image x:Name="MediaViewerImage" />
             
             <Grid VerticalAlignment="Top" HorizontalAlignment="Right" Margin="0,20,20,0" Width="50" Height="50" Background="#BF343434">

@@ -192,6 +192,13 @@ namespace FapChat.Core.Snapchat
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="snapId"></param>
+        /// <param name="username"></param>
+        /// <param name="authToken"></param>
+        /// <returns></returns>
         public static async Task<byte[]> GetBlob(string snapId, string username, string authToken)
         {
             var timestamp = Timestamps.GenerateRetardedTimestamp();
@@ -228,6 +235,71 @@ namespace FapChat.Core.Snapchat
                     // Well, fuck
                     return null;
             }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="events"></param>
+        /// <param name="snapInfo"></param>
+        /// <param name="username"></param>
+        /// <param name="authToken"></param>
+        /// <returns></returns>
+        public static async Task<bool> SendEvents(Dictionary<string, object>[] events, Dictionary<string, Dictionary<string, double>> snapInfo, string username,
+            string authToken)
+        {
+            var timestamp = Timestamps.GenerateRetardedTimestamp();
+            var postData = new Dictionary<string, string>
+		    {
+                { "events", JsonConvert.SerializeObject(events) },
+                { "json", JsonConvert.SerializeObject(snapInfo) },
+		        { "username", username },
+                { "timestamp", timestamp.ToString(CultureInfo.InvariantCulture) }
+		    };
+
+            var response = await WebRequests.Post("update_snaps", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
+            switch (response.StatusCode)
+            {
+                case HttpStatusCode.OK:
+                    return true;
+
+                default:
+                    // Well, fuck
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="snapId"></param>
+        /// <param name="timeViewed"></param>
+        /// <param name="captureTime"></param>
+        /// <param name="username"></param>
+        /// <param name="authToken"></param>
+        /// <returns></returns>
+        public static async Task<bool> SendViewedEvent(string snapId, int timeViewed, int captureTime, string username,
+            string authToken)
+        {
+            var snapInfo = new Dictionary<string, Dictionary<string, double>>
+            {
+                { 
+                    snapId, 
+                    new Dictionary<string, double>
+                    {
+                        { "t", Timestamps.GenerateRetardedTimestampWithMilliseconds() },
+                        { "sv", captureTime + new Random(0xdead).NextDouble() }
+                    }
+                }
+            };
+
+            var events = new[]
+            {
+                Events.CreateEvent(Events.EventType.SnapViewed, snapId, timeViewed - captureTime),
+                Events.CreateEvent(Events.EventType.SnapExpired, snapId, timeViewed)
+            };
+
+            return await SendEvents(events, snapInfo, username, authToken);
         }
     }
 }

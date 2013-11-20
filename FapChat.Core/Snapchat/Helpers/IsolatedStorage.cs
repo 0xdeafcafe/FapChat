@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.IO.IsolatedStorage;
 using System.Windows.Media.Imaging;
-using FapChat.Core.Helpers;
 using FapChat.Core.Snapchat.Models;
 
 namespace FapChat.Core.Snapchat.Helpers
