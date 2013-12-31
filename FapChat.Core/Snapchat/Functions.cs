@@ -295,8 +295,8 @@ namespace FapChat.Core.Snapchat
 
             var events = new[]
             {
-                Events.CreateEvent(Events.EventType.SnapViewed, snapId, timeViewed - captureTime),
-                Events.CreateEvent(Events.EventType.SnapExpired, snapId, timeViewed)
+                Events.CreateEvent(Events.EventType.SnapViewed, snapId, timeViewed),
+                Events.CreateEvent(Events.EventType.SnapExpired, snapId, timeViewed + captureTime)
             };
 
             return await SendEvents(events, snapInfo, username, authToken);

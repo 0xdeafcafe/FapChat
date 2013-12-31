@@ -119,11 +119,16 @@ namespace FapChat.Wp8.Pages.Authed
             snap.Status = SnapStatus.Delivered;
             UpdateBindings();
 
+            if (snap.CaptureTime == null) return;
+
             SetProgress("Syncing with Snapchat...");
-            if (snap.CaptureTime != null)
-                await Core.Snapchat.Functions.SendViewedEvent(snap.Id,
-                    Core.Snapchat.Helpers.Timestamps.ConvertToUnixTimestamp(openedAt), (int)snap.CaptureTime, username,
-                    authToken);
+
+            //await Core.Snapchat.Functions.SendViewedEvent(snap.Id,
+            //    Core.Snapchat.Helpers.Timestamps.ConvertToUnixTimestamp(openedAt), (int)snap.CaptureTime, username,
+            //    authToken);
+            //App.IsolatedStorage.UserAccountUpdate(await Core.Snapchat.Functions.Update(username, authToken));
+            //UpdateBindings();
+
             HideProgress();
         }
         private void ButtonSnap_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
@@ -133,7 +138,7 @@ namespace FapChat.Wp8.Pages.Authed
 
             _mouseStillDown = true;
             _scrollYIndex = ScrollViewer.VerticalOffset;
-            var timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 300) };
+            var timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 250) };
             timer.Tick += (o, args) =>
             {
                 timer.Stop();
@@ -178,7 +183,8 @@ namespace FapChat.Wp8.Pages.Authed
         private void UpdateBindings()
         {
             ItemsSnaps.DataContext =
-                App.IsolatedStorage.UserAccount.Snaps.Where(s => s.MediaType != MediaType.FriendRequest);
+                App.IsolatedStorage.UserAccount.Snaps.Where(s => s.MediaType != MediaType.FriendRequest)
+                    .OrderByDescending(s => s.SentTimestamp);
         }
 
         #region Overrides
@@ -294,6 +300,9 @@ namespace FapChat.Wp8.Pages.Authed
                 case MediaType.FriendRequestVideo:
                 case MediaType.FriendRequestVideoNoAudio:
                     MediaViewerVideo.SetSource(blobData as IsolatedStorageFileStream);
+                    var leSnap = App.IsolatedStorage.UserAccount.Snaps.FirstOrDefault(s => s.Id == snap.Id);
+                    if (leSnap != null)
+                        leSnap.CaptureTime = 69;
                     break;
             }
 

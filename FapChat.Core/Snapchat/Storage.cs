@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO.IsolatedStorage;
+using System.Linq;
 using FapChat.Core.Snapchat.Models;
 using Newtonsoft.Json;
 
@@ -16,6 +17,8 @@ namespace FapChat.Core.Snapchat
         /// Application Settings stored in Isolated Storage
         /// </summary>
         private readonly IsolatedStorageSettings _appSettings = IsolatedStorageSettings.ApplicationSettings;
+
+        #region UserAccount
 
         /// <summary>
         /// Holds Account Details
@@ -41,6 +44,48 @@ namespace FapChat.Core.Snapchat
         }
         private Account _userAccount;
         public DateTime UserAccountLastUpdate { get; private set; }
+
+        /// <summary>
+        /// A really hacker way of updating the local data as to not overide changes we have made
+        /// </summary>
+        /// <param name="account"></param>
+        public void UserAccountUpdate(Account account)
+        {
+            if (UserAccount == null)
+            {
+                UserAccount = account;
+                return;
+            }
+
+            // save current states
+            var snapsBackup = UserAccount.Snaps;
+            var newSnaps = account.Snaps;
+
+            // replace new snaps with current ones
+            account.Snaps = snapsBackup;
+            UserAccount = account;
+            UserAccount.Snaps = snapsBackup;
+
+            // carefully loop though new snaps, updateing one ones that be been sent
+            foreach (var newSnap in newSnaps)
+            {
+                var oldSnap = UserAccount.Snaps.FirstOrDefault(s => s.Id == newSnap.Id);
+                if (oldSnap == null)
+                {
+                    UserAccount.Snaps.Add(newSnap);
+                    return;
+                }
+                if (oldSnap.RecipientName == null) return;
+
+                // SO FUCKING HACKISH HOLY SHIT FUCCCK
+                // WHAT IS THIS SHIT OMG
+                newSnap.SentTimestamp = oldSnap.SentTimestamp;
+                newSnap.Status = oldSnap.Status;
+                newSnap.Timestamp = oldSnap.Timestamp;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Holds the Bests of an users friends
