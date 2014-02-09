@@ -19,7 +19,6 @@ namespace FapChat.Wp8.Pages.Authed
 {
 	public partial class Messages : IPhonePageExtender
 	{
-		private Snap _currentSnap;
 		private bool _fingerStillDown;
 		private bool _mediaIsBeingDisplayed;
 		private double _scrollYIndex;
@@ -38,7 +37,7 @@ namespace FapChat.Wp8.Pages.Authed
 				    App.IsolatedStorage.UserAccount.Snaps == null)
 					return;
 
-				foreach (Snap snap in App.IsolatedStorage.UserAccount.Snaps.Where(snap => snap.RecipientName == null))
+				foreach (var snap in App.IsolatedStorage.UserAccount.Snaps.Where(snap => snap.RecipientName == null))
 				{
 					switch (snap.GetState)
 					{
@@ -53,7 +52,7 @@ namespace FapChat.Wp8.Pages.Authed
 
 						case SnapState.Available:
 							// ReSharper disable once PossibleInvalidOperationException
-							int? secondsRemaining = Convert.ToInt32(((DateTime) snap.OpenedAt - DateTime.UtcNow).TotalSeconds) +
+							var secondsRemaining = Convert.ToInt32(((DateTime) snap.OpenedAt - DateTime.UtcNow).TotalSeconds) +
 							                        snap.CaptureTime;
 
 							if (secondsRemaining <= 0)
@@ -97,15 +96,15 @@ namespace FapChat.Wp8.Pages.Authed
 				return;
 			}
 
-			string username = App.IsolatedStorage.UserAccount.UserName;
-			string authToken = App.IsolatedStorage.UserAccount.AuthToken;
+			var username = App.IsolatedStorage.UserAccount.UserName;
+			var authToken = App.IsolatedStorage.UserAccount.AuthToken;
 
 			if (snap.HasMedia || snap.RecipientName != null || snap.Status != SnapStatus.Delivered) return;
 
 			snap.Status = SnapStatus.Downloading;
 			UpdateBindings();
 
-			byte[] blob = await Functions.GetBlob(snap.Id, username, authToken);
+			var blob = await Functions.GetBlob(snap.Id, username, authToken);
 			var cachedBlob = new CachedMediaBlob
 			{
 				BlobMediaType = snap.MediaType,
@@ -115,7 +114,7 @@ namespace FapChat.Wp8.Pages.Authed
 
 			App.IsolatedStorage.CachedMediaBlobs.Add(cachedBlob);
 			App.IsolatedStorage.CachedMediaBlobs = App.IsolatedStorage.CachedMediaBlobs;
-			DateTime openedAt = DateTime.UtcNow;
+			var openedAt = DateTime.UtcNow;
 			App.IsolatedStorage.UserAccount.Snaps.First(s => s.Id == snap.Id).OpenedAt = openedAt;
 
 			snap.Status = SnapStatus.Delivered;
@@ -148,7 +147,7 @@ namespace FapChat.Wp8.Pages.Authed
 				if (!_fingerStillDown)
 					return;
 
-				double diff = _scrollYIndex - ScrollViewer.VerticalOffset;
+				var diff = _scrollYIndex - ScrollViewer.VerticalOffset;
 				Debug.WriteLine(diff);
 				if (diff < -10 || diff > 10)
 					return;
@@ -167,7 +166,7 @@ namespace FapChat.Wp8.Pages.Authed
 
 				if (!snap.HasMedia && snap.RecipientName == null) return;
 
-				CachedMediaBlob cachedMediaBlob = App.IsolatedStorage.CachedMediaBlobs.FirstOrDefault(c => c.Id == snap.Id);
+				var cachedMediaBlob = App.IsolatedStorage.CachedMediaBlobs.FirstOrDefault(c => c.Id == snap.Id);
 				if (cachedMediaBlob == null) return;
 
 				StartMedia(cachedMediaBlob, snap);
@@ -197,10 +196,10 @@ namespace FapChat.Wp8.Pages.Authed
 			// start refresh
 			SetProgress("Syncing with Snapchat securely...");
 
-			string username = App.IsolatedStorage.UserAccount.UserName;
-			string authToken = App.IsolatedStorage.UserAccount.AuthToken;
+			var username = App.IsolatedStorage.UserAccount.UserName;
+			var authToken = App.IsolatedStorage.UserAccount.AuthToken;
 
-			Account update = App.IsolatedStorage.UserAccount;
+			var update = App.IsolatedStorage.UserAccount;
 
 			if (App.IsolatedStorage.UserAccountLastUpdate + new TimeSpan(0, 0, 0, 30) < DateTime.UtcNow)
 				update = await Functions.Update(username, authToken);
@@ -288,9 +287,8 @@ namespace FapChat.Wp8.Pages.Authed
 			ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
 			MediaContainer.Visibility = Visibility.Visible;
 
-			object blobData = blob.RetrieveBlobData();
+			var blobData = blob.RetrieveBlobData();
 			MediaCountdownTimer.DataContext = snap;
-			_currentSnap = snap;
 
 			switch (blob.BlobMediaType)
 			{
@@ -304,7 +302,7 @@ namespace FapChat.Wp8.Pages.Authed
 				case MediaType.FriendRequestVideo:
 				case MediaType.FriendRequestVideoNoAudio:
 					MediaViewerVideo.SetSource(blobData as IsolatedStorageFileStream);
-					Snap leSnap = App.IsolatedStorage.UserAccount.Snaps.FirstOrDefault(s => s.Id == snap.Id);
+					var leSnap = App.IsolatedStorage.UserAccount.Snaps.FirstOrDefault(s => s.Id == snap.Id);
 					if (leSnap != null)
 						leSnap.CaptureTime = 69;
 					break;
@@ -323,7 +321,6 @@ namespace FapChat.Wp8.Pages.Authed
 			MediaViewerImage.Source = null;
 			MediaViewerVideo.Source = null;
 			MediaCountdownTimer.DataContext = null;
-			_currentSnap = null;
 		}
 
 		private void MediaViewerVideo_MediaEnded(object sender, RoutedEventArgs e)
