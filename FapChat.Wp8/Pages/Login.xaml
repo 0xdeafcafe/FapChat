@@ -1,54 +1,60 @@
 ﻿<phone:PhoneApplicationPage
-    x:Class="FapChat.Wp8.Pages.Login"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
-    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
-    mc:Ignorable="d"
-    FontFamily="{StaticResource PhoneFontFamilyNormal}"
-    FontSize="{StaticResource PhoneFontSizeNormal}"
-    Foreground="{StaticResource PhoneForegroundBrush}"
-    SupportedOrientations="Portrait"  Orientation="Portrait"
-    shell:SystemTray.IsVisible="True"
-    shell:SystemTray.BackgroundColor="#e9c109"
-    shell:SystemTray.ForegroundColor="#ffffff">
+	x:Class="FapChat.Wp8.Pages.Login"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+	xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:toolkit="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone.Controls.Toolkit"
+	mc:Ignorable="d"
+	FontFamily="{StaticResource PhoneFontFamilyNormal}"
+	FontSize="{StaticResource PhoneFontSizeNormal}"
+	Foreground="{StaticResource PhoneForegroundBrush}"
+	SupportedOrientations="Portrait" Orientation="Portrait"
+	shell:SystemTray.IsVisible="True"
+	shell:SystemTray.BackgroundColor="#e9c109"
+	shell:SystemTray.ForegroundColor="#ffffff">
 
-    <!--LayoutRoot is the root grid where all page content is placed-->
-    <Grid x:Name="LayoutRoot" Background="#FFFFFF">
-        <Rectangle VerticalAlignment="Top" HorizontalAlignment="Stretch" Fill="#e9c109" Height="150"></Rectangle>
-        <!--Pivot Control-->
-        <phone:Pivot x:Name="PagePivot" Title="FAPCHAT" SelectionChanged="Pivot_SelectionChanged">
-            <!--Pivot item one-->
-            <phone:PivotItem Header="login">
-                <Grid Margin="10,40,0,0">
-                    <StackPanel>
-                        <TextBlock Text="username" Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight"></TextBlock>
-                        <toolkit:PhoneTextBox x:Name="TextUsername" FontSize="34" FontFamily="Segoe WP SemiLight" Background="#BFCFCFCF" Margin="-15,0,0,0" Foreground="#FF747474" KeyUp="TextUsername_KeyUp" SelectionBackground="#FFE9C109"/>
-                        
-                        <TextBlock Text="password" Margin="0,20,0,0" Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight"></TextBlock>
-                        <PasswordBox x:Name="TextPassword" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="-15,0,0,0" Background="#BFCFCFCF" Foreground="#FF747474" KeyUp="TextPassword_KeyUp" SelectionBackground="#FFE9C109"></PasswordBox>
-                    </StackPanel>
-                </Grid>
-            </phone:PivotItem>
+	<!--LayoutRoot is the root grid where all page content is placed-->
+	<Grid x:Name="LayoutRoot" Background="#FFFFFF">
+		<Rectangle VerticalAlignment="Top" HorizontalAlignment="Stretch" Fill="#e9c109" Height="150" />
+		<!--Pivot Control-->
+		<phone:Pivot x:Name="PagePivot" Title="FAPCHAT" SelectionChanged="Pivot_SelectionChanged">
+			<!--Pivot item one-->
+			<phone:PivotItem Header="login">
+				<Grid Margin="10,40,0,0">
+					<StackPanel>
+						<TextBlock Text="username" Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" />
+						<toolkit:PhoneTextBox x:Name="TextUsername" FontSize="34" FontFamily="Segoe WP SemiLight" Background="#BFCFCFCF"
+						                      Margin="-15,0,0,0" Foreground="#FF747474" KeyUp="TextUsername_KeyUp"
+						                      SelectionBackground="#FFE9C109" />
 
-            <!--Pivot item two-->
-            <phone:PivotItem Header="register">
-                <Grid/>
-            </phone:PivotItem>
-        </phone:Pivot>
-        <Rectangle x:Name="PendingOverlay" HorizontalAlignment="Stretch" Fill="#e9c109" Opacity="0.425" Visibility="Collapsed"/>
-    </Grid>
+						<TextBlock Text="password" Margin="0,20,0,0" Foreground="#FF616161" FontSize="34" FontFamily="Segoe WP SemiLight" />
+						<PasswordBox x:Name="TextPassword" FontSize="34" FontFamily="Segoe WP SemiLight" Margin="-15,0,0,0"
+						             Background="#BFCFCFCF" Foreground="#FF747474" KeyUp="TextPassword_KeyUp"
+						             SelectionBackground="#FFE9C109" />
+					</StackPanel>
+				</Grid>
+			</phone:PivotItem>
 
-    <phone:PhoneApplicationPage.ApplicationBar >
-        <shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" BackgroundColor="#FFE9C109">
-            <shell:ApplicationBarIconButton Text="Login" Click="ApplicationBarActionButton_Click" IconUri="/Assets/AppBar/check.png"/>
-            <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="Legal shit"/>
-            </shell:ApplicationBar.MenuItems>
-        </shell:ApplicationBar>
-    </phone:PhoneApplicationPage.ApplicationBar>
+			<!--Pivot item two-->
+			<phone:PivotItem Header="register">
+				<Grid />
+			</phone:PivotItem>
+		</phone:Pivot>
+		<Rectangle x:Name="PendingOverlay" HorizontalAlignment="Stretch" Fill="#e9c109" Opacity="0.425"
+		           Visibility="Collapsed" />
+	</Grid>
+
+	<phone:PhoneApplicationPage.ApplicationBar>
+		<shell:ApplicationBar IsVisible="True" IsMenuEnabled="True" BackgroundColor="#FFE9C109">
+			<shell:ApplicationBarIconButton Text="Login" Click="ApplicationBarActionButton_Click"
+			                                IconUri="/Assets/AppBar/check.png" />
+			<shell:ApplicationBar.MenuItems>
+				<shell:ApplicationBarMenuItem Text="Legal shit" />
+			</shell:ApplicationBar.MenuItems>
+		</shell:ApplicationBar>
+	</phone:PhoneApplicationPage.ApplicationBar>
 
 </phone:PhoneApplicationPage>

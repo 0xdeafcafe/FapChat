@@ -9,6 +9,7 @@ using System.Windows.Input;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Threading;
+using FapChat.Core.Snapchat;
 using FapChat.Core.Snapchat.Models;
 using FapChat.Wp8.Helpers;
 using FapChat.Wp8.Interfaces;
@@ -16,318 +17,321 @@ using Microsoft.Phone.Shell;
 
 namespace FapChat.Wp8.Pages.Authed
 {
-    public partial class Messages : IPhonePageExtender
-    {
-        public Messages()
-        {
-            InitializeComponent();
+	public partial class Messages : IPhonePageExtender
+	{
+		private Snap _currentSnap;
+		private bool _fingerStillDown;
+		private bool _mediaIsBeingDisplayed;
+		private double _scrollYIndex;
 
-            MediaContainer.Visibility = Visibility.Collapsed;
-            UpdateBindings();
+		public Messages()
+		{
+			InitializeComponent();
 
-            var checkExpireTimes = new DispatcherTimer();
-            checkExpireTimes.Tick += (sender, args) =>
-            {
-                if (App.IsolatedStorage == null || App.IsolatedStorage.UserAccount == null ||
-                    App.IsolatedStorage.UserAccount.Snaps == null)
-                    return;
+			MediaContainer.Visibility = Visibility.Collapsed;
+			UpdateBindings();
 
-                foreach (var snap in App.IsolatedStorage.UserAccount.Snaps.Where(snap => snap.RecipientName == null))
-                {
-                    switch (snap.GetState)
-                    {
-                        case SnapState.Expired:
-                            if (snap.Status != SnapStatus.Opened)
-                            {
-                                snap.RemainingSeconds = null;
-                                snap.Status = SnapStatus.Opened;
-                                UpdateBindings();
+			var checkExpireTimes = new DispatcherTimer();
+			checkExpireTimes.Tick += (sender, args) =>
+			{
+				if (App.IsolatedStorage == null || App.IsolatedStorage.UserAccount == null ||
+				    App.IsolatedStorage.UserAccount.Snaps == null)
+					return;
 
-                                if (_currentSnap == snap)
-                                    EndMedia();
-                            }
-                            break;
+				foreach (Snap snap in App.IsolatedStorage.UserAccount.Snaps.Where(snap => snap.RecipientName == null))
+				{
+					switch (snap.GetState)
+					{
+						case SnapState.Expired:
+							if (snap.Status != SnapStatus.Opened)
+							{
+								snap.RemainingSeconds = null;
+								snap.Status = SnapStatus.Opened;
+								UpdateBindings();
+							}
+							break;
 
-                        case SnapState.Available:
-                            // ReSharper disable once PossibleInvalidOperationException
-                            var secondsRemaining = Convert.ToInt32(((DateTime)snap.OpenedAt - DateTime.UtcNow).TotalSeconds) +
-                                       snap.CaptureTime;
+						case SnapState.Available:
+							// ReSharper disable once PossibleInvalidOperationException
+							int? secondsRemaining = Convert.ToInt32(((DateTime) snap.OpenedAt - DateTime.UtcNow).TotalSeconds) +
+							                        snap.CaptureTime;
 
-                            if (secondsRemaining <= 0)
-                            {
-                                snap.Status = SnapStatus.Opened;
-                                snap.RemainingSeconds = null;
-                                UpdateBindings();
+							if (secondsRemaining <= 0)
+							{
+								snap.Status = SnapStatus.Opened;
+								snap.RemainingSeconds = null;
+								UpdateBindings();
+							}
+							else
+								snap.RemainingSeconds = secondsRemaining;
+							break;
+					}
+				}
+			};
+			checkExpireTimes.Interval = new TimeSpan(0, 0, 0, 1);
+			checkExpireTimes.Start();
+		}
 
-                                if (_currentSnap == snap)
-                                    EndMedia();
-                            }
-                            else
-                                snap.RemainingSeconds = secondsRemaining;
-                            break;
-                    }
-                }
-            };
-            checkExpireTimes.Interval = new TimeSpan(0, 0, 0, 1);
-            checkExpireTimes.Start();
-        }
-        
-        private bool _mediaIsBeingDisplayed;
-        private Snap _currentSnap;
-        private bool _mouseStillDown;
-        private double _scrollYIndex;
-        private async void ButtonSnap_Click(object sender, RoutedEventArgs e)
-        {
-            if (_mediaIsBeingDisplayed)
-            {
-                EndMedia();
-                return;
-            }
+		private async void ButtonSnap_Click(object sender, RoutedEventArgs e)
+		{
+			if (_mediaIsBeingDisplayed)
+			{
+				EndMedia();
+				return;
+			}
 
-            var button = sender as Button;
-            if (button == null || button.Tag == null)
-                return;
+			var button = sender as Button;
+			if (button == null || button.Tag == null)
+				return;
 
-            var snap = button.Tag as Snap;
-            if (snap == null)
-                return;
+			var snap = button.Tag as Snap;
+			if (snap == null)
+				return;
 
-            if (snap.Status == SnapStatus.Downloading)
-                return;
+			if (snap.Status == SnapStatus.Downloading)
+				return;
 
-            var username = App.IsolatedStorage.UserAccount.UserName;
-            var authToken = App.IsolatedStorage.UserAccount.AuthToken;
+			if (snap.HasMedia && snap.RecipientName == null && snap.Status == SnapStatus.Opened)
+			{
+				// show media, in advanced page
+				return;
+			}
 
-            if (snap.HasMedia || snap.RecipientName != null || snap.Status != SnapStatus.Delivered) return;
+			string username = App.IsolatedStorage.UserAccount.UserName;
+			string authToken = App.IsolatedStorage.UserAccount.AuthToken;
 
-            snap.Status = SnapStatus.Downloading;
-            UpdateBindings();
+			if (snap.HasMedia || snap.RecipientName != null || snap.Status != SnapStatus.Delivered) return;
 
-            var blob = await Core.Snapchat.Functions.GetBlob(snap.Id, username, authToken);
-            var cachedBlob = new CachedMediaBlob
-            {
-                BlobMediaType = snap.MediaType,
-                Id = snap.Id
-            };
-            cachedBlob.SetLocalFileBytes(blob);
+			snap.Status = SnapStatus.Downloading;
+			UpdateBindings();
 
-            App.IsolatedStorage.CachedMediaBlobs.Add(cachedBlob);
-            App.IsolatedStorage.CachedMediaBlobs = App.IsolatedStorage.CachedMediaBlobs;
-            var openedAt = DateTime.UtcNow;
-            App.IsolatedStorage.UserAccount.Snaps.First(s => s.Id == snap.Id).OpenedAt = openedAt;
+			byte[] blob = await Functions.GetBlob(snap.Id, username, authToken);
+			var cachedBlob = new CachedMediaBlob
+			{
+				BlobMediaType = snap.MediaType,
+				Id = snap.Id
+			};
+			cachedBlob.SetLocalFileBytes(blob);
 
-            snap.Status = SnapStatus.Delivered;
-            UpdateBindings();
+			App.IsolatedStorage.CachedMediaBlobs.Add(cachedBlob);
+			App.IsolatedStorage.CachedMediaBlobs = App.IsolatedStorage.CachedMediaBlobs;
+			DateTime openedAt = DateTime.UtcNow;
+			App.IsolatedStorage.UserAccount.Snaps.First(s => s.Id == snap.Id).OpenedAt = openedAt;
 
-            if (snap.CaptureTime == null) return;
+			snap.Status = SnapStatus.Delivered;
+			UpdateBindings();
 
-            SetProgress("Syncing with Snapchat...");
+			if (snap.CaptureTime == null) return;
 
-            //await Core.Snapchat.Functions.SendViewedEvent(snap.Id,
-            //    Core.Snapchat.Helpers.Timestamps.ConvertToUnixTimestamp(openedAt), (int)snap.CaptureTime, username,
-            //    authToken);
-            //App.IsolatedStorage.UserAccountUpdate(await Core.Snapchat.Functions.Update(username, authToken));
-            //UpdateBindings();
+			SetProgress("Syncing with Snapchat...");
 
-            HideProgress();
-        }
-        private void ButtonSnap_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
-        {
-            if (_mouseStillDown)
-                return;
+			//await Core.Snapchat.Functions.SendViewedEvent(snap.Id,
+			//    Core.Snapchat.Helpers.Timestamps.ConvertToUnixTimestamp(openedAt), (int)snap.CaptureTime, username,
+			//    authToken);
+			//App.IsolatedStorage.UserAccountUpdate(await Core.Snapchat.Functions.Update(username, authToken));
+			//UpdateBindings();
 
-            _mouseStillDown = true;
-            _scrollYIndex = ScrollViewer.VerticalOffset;
-            var timer = new DispatcherTimer { Interval = new TimeSpan(0, 0, 0, 0, 250) };
-            timer.Tick += (o, args) =>
-            {
-                timer.Stop();
-                if (!_mouseStillDown)
-                    return;
+			HideProgress();
+		}
 
-                var diff = _scrollYIndex - ScrollViewer.VerticalOffset;
-                Debug.WriteLine(diff);
-                if (diff < -10 || diff > 10)
-                    return;
+		private void ButtonSnap_ManipulationStarted(object sender, ManipulationStartedEventArgs e)
+		{
+			if (_fingerStillDown)
+				return;
 
-                if (_mediaIsBeingDisplayed)
-                {
-                    EndMedia();
-                    return;
-                }
+			_fingerStillDown = true;
+			_scrollYIndex = ScrollViewer.VerticalOffset;
+			var timer = new DispatcherTimer {Interval = new TimeSpan(0, 0, 0, 0, 250)};
+			timer.Tick += (o, args) =>
+			{
+				timer.Stop();
+				if (!_fingerStillDown)
+					return;
 
-                var button = sender as Button;
-                if (button == null || button.Tag == null) return;
+				double diff = _scrollYIndex - ScrollViewer.VerticalOffset;
+				Debug.WriteLine(diff);
+				if (diff < -10 || diff > 10)
+					return;
 
-                var snap = button.Tag as Snap;
-                if (snap == null || snap.Status == SnapStatus.Downloading) return;
+				if (_mediaIsBeingDisplayed)
+				{
+					EndMedia();
+					return;
+				}
 
-                if (!snap.HasMedia && snap.RecipientName == null) return;
-                if (snap.Status != SnapStatus.Delivered) return;
+				var button = sender as Button;
+				if (button == null || button.Tag == null) return;
 
-                var cachedMediaBlob = App.IsolatedStorage.CachedMediaBlobs.FirstOrDefault(c => c.Id == snap.Id);
-                if (cachedMediaBlob == null) return;
+				var snap = button.Tag as Snap;
+				if (snap == null || snap.Status == SnapStatus.Downloading) return;
 
-                StartMedia(cachedMediaBlob, snap);
-            };
-            timer.Start();
-        }
-        private void ButtonSnap_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
-        {
-            _mouseStillDown = false;
+				if (!snap.HasMedia && snap.RecipientName == null) return;
 
-            if (!_mediaIsBeingDisplayed) return;
-            EndMedia();
-        }
+				CachedMediaBlob cachedMediaBlob = App.IsolatedStorage.CachedMediaBlobs.FirstOrDefault(c => c.Id == snap.Id);
+				if (cachedMediaBlob == null) return;
 
-        private void UpdateBindings()
-        {
-            ItemsSnaps.DataContext =
-                App.IsolatedStorage.UserAccount.Snaps.Where(s => s.MediaType != MediaType.FriendRequest)
-                    .OrderByDescending(s => s.SentTimestamp);
-        }
+				StartMedia(cachedMediaBlob, snap);
+			};
+			timer.Start();
+		}
 
-        #region Overrides
+		private void ButtonSnap_ManipulationCompleted(object sender, ManipulationCompletedEventArgs e)
+		{
+			_fingerStillDown = false;
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
-        {
-            // start refresh
-            SetProgress("Syncing with Snapchat securely...");
+			if (!_mediaIsBeingDisplayed) return;
+			EndMedia();
+		}
 
-            var username = App.IsolatedStorage.UserAccount.UserName;
-            var authToken = App.IsolatedStorage.UserAccount.AuthToken;
+		private void UpdateBindings()
+		{
+			ItemsSnaps.DataContext =
+				App.IsolatedStorage.UserAccount.Snaps.Where(s => s.MediaType != MediaType.FriendRequest)
+					.OrderByDescending(s => s.SentTimestamp);
+		}
 
-            var update = App.IsolatedStorage.UserAccount;
+		#region Overrides
 
-            if (App.IsolatedStorage.UserAccountLastUpdate + new TimeSpan(0, 0, 0, 30) < DateTime.UtcNow)
-                update = await Core.Snapchat.Functions.Update(username, authToken);
+		protected override async void OnNavigatedTo(NavigationEventArgs e)
+		{
+			// start refresh
+			SetProgress("Syncing with Snapchat securely...");
 
-            HideProgress();
-            if (update == null)
-            {
-                Navigation.NavigateToAndRemoveBackStack(Navigation.NavigationTarget.Login);
-                MessageBox.Show("You are not authorized, please log back in.", "Unable to authenticate",
-                    MessageBoxButton.OK);
-            }
-            else
-                App.IsolatedStorage.UserAccount = update;
+			string username = App.IsolatedStorage.UserAccount.UserName;
+			string authToken = App.IsolatedStorage.UserAccount.AuthToken;
 
-            UpdateBindings();
+			Account update = App.IsolatedStorage.UserAccount;
 
-            base.OnNavigatedTo(e);
-        }
+			if (App.IsolatedStorage.UserAccountLastUpdate + new TimeSpan(0, 0, 0, 30) < DateTime.UtcNow)
+				update = await Functions.Update(username, authToken);
 
-        protected override void OnBackKeyPress(CancelEventArgs e)
-        {
-            if (_maskLayerIndex > 0)
-                e.Cancel = true;
+			HideProgress();
+			if (update == null)
+			{
+				Navigation.NavigateToAndRemoveBackStack(Navigation.NavigationTarget.Login);
+				MessageBox.Show("You are not authorized, please log back in.", "Unable to authenticate",
+					MessageBoxButton.OK);
+			}
+			else
+				App.IsolatedStorage.UserAccount = update;
 
-            if (_mediaIsBeingDisplayed)
-            {
-                e.Cancel = true;
-                EndMedia();
-            }
+			UpdateBindings();
 
-            base.OnBackKeyPress(e);
-        }
+			base.OnNavigatedTo(e);
+		}
 
-        #endregion
+		protected override void OnBackKeyPress(CancelEventArgs e)
+		{
+			if (_maskLayerIndex > 0)
+				e.Cancel = true;
 
-        #region Interfaces
+			if (_mediaIsBeingDisplayed)
+			{
+				e.Cancel = true;
+				EndMedia();
+			}
 
-        private int _maskLayerIndex;
-        public void SetProgress(string message, bool showMask = false)
-        {
-            if (showMask)
-            {
-                _maskLayerIndex++;
-                PendingOverlay.Visibility = Visibility.Collapsed;
-                ApplicationBar.IsMenuEnabled = false;
-            }
+			base.OnBackKeyPress(e);
+		}
 
-            SystemTray.SetProgressIndicator(this,
-                   new ProgressIndicator
-                   {
-                       IsVisible = true,
-                       IsIndeterminate = true,
-                       Text = message
-                   });
-        }
+		#endregion
 
-        public void HideProgress(bool hideMask = false)
-        {
-            if (hideMask)
-                _maskLayerIndex--;
+		#region Interfaces
 
-            if (_maskLayerIndex == 0)
-            {
-                PendingOverlay.Visibility = Visibility.Collapsed;
-                ApplicationBar.IsMenuEnabled = true;
-            }
+		private int _maskLayerIndex;
 
-            SystemTray.SetProgressIndicator(this,
-                    new ProgressIndicator
-                    {
-                        IsVisible = false,
-                        IsIndeterminate = true,
-                        Text = "[hidden] Waiting for Command..."
-                    });
-        }
+		public void SetProgress(string message, bool showMask = false)
+		{
+			if (showMask)
+			{
+				_maskLayerIndex++;
+				PendingOverlay.Visibility = Visibility.Collapsed;
+				ApplicationBar.IsMenuEnabled = false;
+			}
 
-        #endregion
+			SystemTray.SetProgressIndicator(this,
+				new ProgressIndicator
+				{
+					IsVisible = true,
+					IsIndeterminate = true,
+					Text = message
+				});
+		}
 
-        #region Media
+		public void HideProgress(bool hideMask = false)
+		{
+			if (hideMask)
+				_maskLayerIndex--;
 
-        private void StartMedia(CachedMediaBlob blob, Snap snap)
-        {
-            SystemTray.IsVisible = ApplicationBar.IsVisible = false;
-            ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
-            MediaContainer.Visibility = Visibility.Visible;
+			if (_maskLayerIndex == 0)
+			{
+				PendingOverlay.Visibility = Visibility.Collapsed;
+				ApplicationBar.IsMenuEnabled = true;
+			}
 
-            var blobData = blob.RetrieveBlobData();
-            MediaCountdownTimer.DataContext = snap;
-            _currentSnap = snap;
+			SystemTray.SetProgressIndicator(this,
+				new ProgressIndicator
+				{
+					IsVisible = false,
+					IsIndeterminate = true,
+					Text = "[hidden] Waiting for Command..."
+				});
+		}
 
-            switch (blob.BlobMediaType)
-            {
-                case MediaType.FriendRequestImage:
-                case MediaType.Image:
-                    MediaViewerImage.Source = blobData as BitmapImage;
-                    break;
+		#endregion
 
-                case MediaType.Video:
-                case MediaType.VideoNoAudio:
-                case MediaType.FriendRequestVideo:
-                case MediaType.FriendRequestVideoNoAudio:
-                    MediaViewerVideo.SetSource(blobData as IsolatedStorageFileStream);
-                    var leSnap = App.IsolatedStorage.UserAccount.Snaps.FirstOrDefault(s => s.Id == snap.Id);
-                    if (leSnap != null)
-                        leSnap.CaptureTime = 69;
-                    break;
-            }
+		#region Media
 
-            _mediaIsBeingDisplayed = true;
-        }
+		private void StartMedia(CachedMediaBlob blob, Snap snap)
+		{
+			SystemTray.IsVisible = ApplicationBar.IsVisible = false;
+			ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Disabled;
+			MediaContainer.Visibility = Visibility.Visible;
 
-        private void EndMedia()
-        {
-            SystemTray.IsVisible = ApplicationBar.IsVisible = true;
-            _mediaIsBeingDisplayed = false;
+			object blobData = blob.RetrieveBlobData();
+			MediaCountdownTimer.DataContext = snap;
+			_currentSnap = snap;
 
-            MediaContainer.Visibility = Visibility.Collapsed;
-            ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
-            MediaViewerImage.Source = null;
-            MediaViewerVideo.Source = null;
-            MediaCountdownTimer.DataContext = null;
-            _currentSnap = null;
-        }
+			switch (blob.BlobMediaType)
+			{
+				case MediaType.FriendRequestImage:
+				case MediaType.Image:
+					MediaViewerImage.Source = blobData as BitmapImage;
+					break;
 
-        private void MediaViewerVideo_MediaEnded(object sender, RoutedEventArgs e)
-        {
-            if (_mediaIsBeingDisplayed)
-                EndMedia();
-        }
+				case MediaType.Video:
+				case MediaType.VideoNoAudio:
+				case MediaType.FriendRequestVideo:
+				case MediaType.FriendRequestVideoNoAudio:
+					MediaViewerVideo.SetSource(blobData as IsolatedStorageFileStream);
+					Snap leSnap = App.IsolatedStorage.UserAccount.Snaps.FirstOrDefault(s => s.Id == snap.Id);
+					if (leSnap != null)
+						leSnap.CaptureTime = 69;
+					break;
+			}
 
-        #endregion
-    }
+			_mediaIsBeingDisplayed = true;
+		}
+
+		private void EndMedia()
+		{
+			SystemTray.IsVisible = ApplicationBar.IsVisible = true;
+			_mediaIsBeingDisplayed = false;
+
+			MediaContainer.Visibility = Visibility.Collapsed;
+			ScrollViewer.VerticalScrollBarVisibility = ScrollBarVisibility.Visible;
+			MediaViewerImage.Source = null;
+			MediaViewerVideo.Source = null;
+			MediaCountdownTimer.DataContext = null;
+			_currentSnap = null;
+		}
+
+		private void MediaViewerVideo_MediaEnded(object sender, RoutedEventArgs e)
+		{
+			if (_mediaIsBeingDisplayed)
+				EndMedia();
+		}
+
+		#endregion
+	}
 }

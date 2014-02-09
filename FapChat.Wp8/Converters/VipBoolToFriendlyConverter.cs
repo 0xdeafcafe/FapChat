@@ -4,22 +4,21 @@ using System.Windows.Data;
 
 namespace FapChat.Wp8.Converters
 {
-    /// <summary>
-    /// Converts a IsVip Boolean to a friendlier string
-    /// </summary>
-    public class VipBoolToFriendlyConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var isVip = Boolean.Parse(value.ToString());
+	/// <summary>
+	///     Converts a IsVip Boolean to a friendlier string
+	/// </summary>
+	public class VipBoolToFriendlyConverter : IValueConverter
+	{
+		public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			bool isVip = Boolean.Parse(value.ToString());
 
-            return isVip ? "VIP Account" : "Standard Account";
-        }
+			return isVip ? "VIP Account" : "Standard Account";
+		}
 
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return value;
-        }
-    }
-
+		public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+		{
+			return value;
+		}
+	}
 }
