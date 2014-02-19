@@ -421,14 +421,7 @@ namespace FapChat.Core.Snapchat
 					if (friendsToBlock.IndexOf(s) != friendsToBlock.Count - 1)
 						blockedFriendsData += ",";
 				}
-				postData = new Dictionary<string, string>
-				{
-					{"username", username},
-					{"action", "updateStoryPrivacy"},
-					{"privacySetting", privacySetting},
-					{"storyFriendsToBlock", string.Format("[{0}]", blockedFriendsData)},
-					{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
-				};
+				postData.Add("storyFriendsToBlock", string.Format("[{0}]", blockedFriendsData));
 			}
 			HttpResponseMessage response =
 				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
