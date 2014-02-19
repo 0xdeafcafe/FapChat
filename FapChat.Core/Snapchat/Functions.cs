@@ -301,5 +301,163 @@ namespace FapChat.Core.Snapchat
 
 			return await SendEvents(events, snapInfo, username, authToken);
 		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="authToken"></param>
+		/// <param name="birthMonth"></param>
+		/// <param name="birthDay"></param>
+		/// <returns></returns>
+		public static async Task<bool> UpdateBirthday(string username, string authToken, int birthMonth, int birthDay)
+		{
+			long timestamp = Timestamps.GenerateRetardedTimestamp();
+			var postData = new Dictionary<string, string>
+			{
+				{"username", username},
+				{"action", "updateBirthday"},
+				{"birthday", string.Format("{0}-{1}", birthMonth, birthDay)},
+				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
+			};
+			HttpResponseMessage response =
+				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
+			switch (response.StatusCode)
+			{
+				case HttpStatusCode.OK:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="authToken"></param>
+		/// <param name="email"></param>
+		/// <returns></returns>
+		public static async Task<bool> UpdateEmail(string username, string authToken, string email)
+		{
+			long timestamp = Timestamps.GenerateRetardedTimestamp();
+			var postData = new Dictionary<string, string>
+			{
+				{"username", username},
+				{"action", "updateEmail"},
+				{"email", email},
+				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
+			};
+			HttpResponseMessage response =
+				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
+			switch (response.StatusCode)
+			{
+				case HttpStatusCode.OK:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="authToken"></param>
+		/// <param name="isPrivate"></param>
+		/// <returns></returns>
+		public static async Task<bool> UpdateAccountPrivacy(string username, string authToken, bool isPrivate)
+		{
+			int privacy = 0;
+			if (isPrivate == true)
+				privacy = 1;
+			long timestamp = Timestamps.GenerateRetardedTimestamp();
+			var postData = new Dictionary<string, string>
+			{
+				{"username", username},
+				{"action", "updatePrivacy"},
+				{"privacySetting", privacy.ToString()},
+				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
+			};
+			HttpResponseMessage response =
+				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
+			switch (response.StatusCode)
+			{
+				case HttpStatusCode.OK:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="authToken"></param>
+		/// <param name="friendsOnly"></param>
+		/// <param name="friendsToBlock"></param>
+		/// <returns></returns>
+		public static async Task<bool> UpdateStoryPrivacy(string username, string authToken, bool friendsOnly, List<string> friendsToBlock = null)
+		{
+			string privacySetting = "";
+			if (friendsOnly == false)
+				privacySetting = "EVERYONE";
+			if (friendsOnly == true && friendsToBlock == null)
+				privacySetting = "FRIENDS";
+			if (friendsOnly == true && friendsToBlock != null)
+				privacySetting = "CUSTOM";
+			long timestamp = Timestamps.GenerateRetardedTimestamp();
+			var postData = new Dictionary<string, string>
+			{
+				{"username", username},
+				{"action", "updateStoryPrivacy"},
+				{"privacySetting", privacySetting},
+				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
+			};
+
+			if (friendsOnly == true && friendsToBlock != null)
+			{
+				string blockedFriendsData = "";
+				foreach (string s in friendsToBlock)
+				{
+					blockedFriendsData += string.Format("'{0}'", s);
+					if (friendsToBlock.IndexOf(s) != friendsToBlock.Count - 1)
+						blockedFriendsData += ",";
+				}
+				postData.Add("storyFriendsToBlock", string.Format("[{0}]", blockedFriendsData));
+			}
+			HttpResponseMessage response =
+				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
+			switch (response.StatusCode)
+			{
+				case HttpStatusCode.OK:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="authToken"></param>
+		/// <param name="canViewMatureContent"></param>
+		public static async Task<bool> UpdateMaturitySettings(string username, string authToken, bool canViewMatureContent)
+		{
+			long timestamp = Timestamps.GenerateRetardedTimestamp();
+			var postData = new Dictionary<string, string>
+			{
+				{"username", username},
+				{"action", "updateCanViewMatureContent"},
+				{"canViewMatureContent", canViewMatureContent.ToString()},
+				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
+			};
+			HttpResponseMessage response =
+				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
+			switch (response.StatusCode)
+			{
+				case HttpStatusCode.OK:
+					return true;
+				default:
+					return false;
+			}
+		}
 	}
 }
