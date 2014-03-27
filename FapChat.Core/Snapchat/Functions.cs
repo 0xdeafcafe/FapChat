@@ -311,23 +311,7 @@ namespace FapChat.Core.Snapchat
 		/// <returns></returns>
 		public static async Task<bool> UpdateBirthday(string username, string authToken, int birthMonth, int birthDay)
 		{
-			long timestamp = Timestamps.GenerateRetardedTimestamp();
-			var postData = new Dictionary<string, string>
-			{
-				{"username", username},
-				{"action", "updateBirthday"},
-				{"birthday", string.Format("{0}-{1}", birthMonth, birthDay)},
-				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
-			};
-			HttpResponseMessage response =
-				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
-			switch (response.StatusCode)
-			{
-				case HttpStatusCode.OK:
-					return true;
-				default:
-					return false;
-			}
+			return await UpdateSetting(username, authToken, "updateBirthday", new Dictionary<string, string> { { "birthday", string.Format("{0}-{1}", birthMonth, birthDay) } });
 		}
 
 		/// <summary>
@@ -338,23 +322,7 @@ namespace FapChat.Core.Snapchat
 		/// <returns></returns>
 		public static async Task<bool> UpdateEmail(string username, string authToken, string email)
 		{
-			long timestamp = Timestamps.GenerateRetardedTimestamp();
-			var postData = new Dictionary<string, string>
-			{
-				{"username", username},
-				{"action", "updateEmail"},
-				{"email", email},
-				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
-			};
-			HttpResponseMessage response =
-				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
-			switch (response.StatusCode)
-			{
-				case HttpStatusCode.OK:
-					return true;
-				default:
-					return false;
-			}
+			return await UpdateSetting(username, authToken, "updateEmail", new Dictionary<string, string> { { "email", email } });
 		}
 
 		/// <summary>
@@ -366,25 +334,10 @@ namespace FapChat.Core.Snapchat
 		public static async Task<bool> UpdateAccountPrivacy(string username, string authToken, bool isPrivate)
 		{
 			int privacy = 0;
-			if (isPrivate == true)
+			if (isPrivate)
 				privacy = 1;
-			long timestamp = Timestamps.GenerateRetardedTimestamp();
-			var postData = new Dictionary<string, string>
-			{
-				{"username", username},
-				{"action", "updatePrivacy"},
-				{"privacySetting", privacy.ToString()},
-				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
-			};
-			HttpResponseMessage response =
-				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
-			switch (response.StatusCode)
-			{
-				case HttpStatusCode.OK:
-					return true;
-				default:
-					return false;
-			}
+
+			return await UpdateSetting(username, authToken, "updatePrivacy", new Dictionary<string, string> { { "privacySetting", privacy.ToString() } });
 		}
 
 		/// <summary>
@@ -403,13 +356,10 @@ namespace FapChat.Core.Snapchat
 				privacySetting = "FRIENDS";
 			if (friendsOnly == true && friendsToBlock != null)
 				privacySetting = "CUSTOM";
-			long timestamp = Timestamps.GenerateRetardedTimestamp();
-			var postData = new Dictionary<string, string>
+
+			var extraPostData = new Dictionary<string, string>
 			{
-				{"username", username},
-				{"action", "updateStoryPrivacy"},
-				{"privacySetting", privacySetting},
-				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
+				{"privacySetting", privacySetting}
 			};
 
 			if (friendsOnly == true && friendsToBlock != null)
@@ -421,8 +371,42 @@ namespace FapChat.Core.Snapchat
 					if (friendsToBlock.IndexOf(s) != friendsToBlock.Count - 1)
 						blockedFriendsData += ",";
 				}
-				postData.Add("storyFriendsToBlock", string.Format("[{0}]", blockedFriendsData));
+				extraPostData.Add("storyFriendsToBlock", string.Format("[{0}]", blockedFriendsData));
 			}
+
+			return await UpdateSetting(username, authToken, "updateStoryPrivacy", new Dictionary<string, string> { { "privacySetting", privacySetting } });
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="authToken"></param>
+		/// <param name="canViewMatureContent"></param>
+		public static async Task<bool> UpdateMaturitySettings(string username, string authToken, bool canViewMatureContent)
+		{
+			return await UpdateSetting(username, authToken, "updateCanViewMatureContent", new Dictionary<string, string> { { "canViewMatureContent", canViewMatureContent.ToString() } });
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="authToken"></param>
+		/// <param name="actionName"></param>
+		/// <param name="postDataEntries"></param>
+		private static async Task<bool> UpdateSetting(string username, string authToken, string actionName, Dictionary<string, string> postDataEntries = null)
+		{
+			long timestamp = Timestamps.GenerateRetardedTimestamp();
+			var postData = new Dictionary<string, string>
+			{
+				{"username", username},
+				{"action", actionName},
+				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
+			};
+
+			if (postDataEntries != null)
+				foreach (var postDataEntry in postDataEntries)
+					postData.Add(postDataEntry.Key, postDataEntry.Value);
+
 			HttpResponseMessage response =
 				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
 			switch (response.StatusCode)
@@ -438,19 +422,61 @@ namespace FapChat.Core.Snapchat
 		/// </summary>
 		/// <param name="username"></param>
 		/// <param name="authToken"></param>
-		/// <param name="canViewMatureContent"></param>
-		public static async Task<bool> UpdateMaturitySettings(string username, string authToken, bool canViewMatureContent)
+		/// <param name="countryCode"></param>
+		/// <param name="numbersAndDisplayNames"></param>
+		public static async Task<bool> FindFriendByNumber(string username, string authToken, string countryCode, List<Tuple<string, string>> numbersAndDisplayNames = null)
+		{
+			string numbersFormat = "{";
+			if (numbersAndDisplayNames != null)
+			{
+				for (int i = 0; i < numbersAndDisplayNames.Count; i++)
+				{
+					if (i > 0)
+						numbersFormat += ",";
+					numbersFormat += string.Format("\"{0}\": \"{1}\"", numbersAndDisplayNames[i].Item1, numbersAndDisplayNames[i].Item2);
+				}
+			}
+
+			numbersFormat += "}";
+
+			long timestamp = Timestamps.GenerateRetardedTimestamp();
+			var postData = new Dictionary<string, string>
+			{
+				{"username", username},
+				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)},
+				{"countryCode", countryCode},
+				{"numbers", numbersFormat}
+			};
+
+			HttpResponseMessage response =
+				await WebRequests.Post("find_friends", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
+			switch (response.StatusCode)
+			{
+				case HttpStatusCode.OK:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>
+		/// </summary>
+		/// <param name="username"></param>
+		/// <param name="authToken"></param>
+		/// <param name="countryCode"></param>
+		/// <param name="postDataEntries"></param>
+		public static async Task<bool> UpdateFeatureSettings(string username, string authToken, bool smartFilters = false, bool visualFilters = false, bool specialText = false, bool replaySnaps = false, bool frontFacingFlash = false)
 		{
 			long timestamp = Timestamps.GenerateRetardedTimestamp();
 			var postData = new Dictionary<string, string>
 			{
 				{"username", username},
-				{"action", "updateCanViewMatureContent"},
-				{"canViewMatureContent", canViewMatureContent.ToString()},
-				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)}
+				{"timestamp", timestamp.ToString(CultureInfo.InvariantCulture)},
+				{"settings", string.Format("{\"smart_filters\": {0}, \"visual_filters\": {1}, \"special_text\": {2}, \"replay_snaps\": {3}, \"front_facing_flash\": {4}}", smartFilters, visualFilters, specialText, replaySnaps, frontFacingFlash)}
 			};
+
 			HttpResponseMessage response =
-				await WebRequests.Post("settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
+				await WebRequests.Post("update_feature_settings", postData, authToken, timestamp.ToString(CultureInfo.InvariantCulture));
 			switch (response.StatusCode)
 			{
 				case HttpStatusCode.OK:
